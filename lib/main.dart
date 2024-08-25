@@ -3,6 +3,7 @@ import 'views/home_view.dart';
 import 'views/articles_view.dart';
 import 'views/camera_view.dart';
 import 'views/map_view.dart';
+import 'widgets/custom_app_bar.dart';
 
 void main() {
   runApp(const MainApp());
@@ -53,6 +54,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(
+        title: 'vitRAl',
+        onLeftButtonPressed: () {},
+        onRightButtonPressed: () {},
+        leftIcon: Icons.menu,
+        rightIcon: Icons.help_outline,
+      ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
