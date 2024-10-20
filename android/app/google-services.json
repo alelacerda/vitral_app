@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "255452689762",
+    "project_id": "ic-vitral",
+    "storage_bucket": "ic-vitral.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255452689762:android:bf699e411794377daf683b",
+        "android_client_info": {
+          "package_name": "dev.vitralapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCln4zlbEHE96rdfVvSnS_Cu1zJ72a0nD4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
