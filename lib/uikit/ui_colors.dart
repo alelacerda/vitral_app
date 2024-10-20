@@ -8,6 +8,7 @@ class UIColor {
   static const Color orange = Color(0xFFF04A0F);
   static const Color yellow = Color(0xFFF89412);
   static const Color lilac = Color(0xFF87489F);
+  static const Color lightLilac = Color(0xFFBFA0E9);
   static const Color purple = Color(0xFF321367);
   static const Color darkPurple = Color(0xFF120030);
 }

@@ -1,7 +1,11 @@
-import '../models/articles_model.dart';
+import '../models/article.dart';
+import '../api.dart';
 
 class ArticlesViewModel {
-  final ArticlesModel model = ArticlesModel();
+  String title = "Conheça sobre vitrais";
+  List<Article> articles = [];
 
-  String get title => model.title;
+  Future<void> fetchArticles() async {
+    articles = await Api.fetchArticles();
+  }
 }
