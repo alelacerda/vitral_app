@@ -6,6 +6,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onRightButtonPressed;
   final IconData leftIcon;
   final IconData rightIcon;
+  final showBackButton;
 
   const CustomAppBar({super.key, 
     required this.title,
@@ -13,6 +14,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onRightButtonPressed,
     required this.leftIcon,
     required this.rightIcon,
+    this.showBackButton = false
   });
 
   @override
@@ -20,7 +22,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      leading: IconButton(
+      leading: showBackButton ?
+        IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: onLeftButtonPressed,
+        )
+        : IconButton(
         icon: Icon(leftIcon, color: Colors.black),
         onPressed: onLeftButtonPressed,
       ),

@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      sha256: "831883fb353c8bdc1d71979e5b342c7d88acfbc643113c14ae51e2442ea0f20f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.17.3"
   fake_async:
     dependency: transitive
     description:
@@ -110,6 +118,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_html:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: alpha-6-flutter-322
+      resolved-ref: "737e696f8defc3ffa05569de36abc2ab13c2df76"
+      url: "https://github.com/cgs/flutter_html"
+    source: git
+    version: "3.0.0-alpha.6"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -128,6 +145,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  html:
+    dependency: transitive
+    description:
+      name: html
+      sha256: "3a7812d5bcd2894edf53dfaf8cd640876cf6cef50a8f238745c8b8120ea74d3a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.4"
   leak_tracker:
     dependency: transitive
     description:
@@ -184,6 +209,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
+  numerus:
+    dependency: transitive
+    description:
+      name: numerus
+      sha256: a17a3f34527497e89378696a76f382b40dc534c4a57b3778de246ebc1ce2ca99
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   path:
     dependency: transitive
     description:
