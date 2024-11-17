@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../uikit/images.dart';
+import '../uikit/ui_colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -19,37 +21,44 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      leading: showBackButton ?
-        IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: onLeftButtonPressed,
-        )
-        : IconButton(
-        icon: Icon(leftIcon, color: Colors.black),
-        onPressed: onLeftButtonPressed,
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.black),
-      ),
-      centerTitle: true,
-      actions: [
-        IconButton(
-          icon: Icon(rightIcon, color: Colors.black),
-          onPressed: onRightButtonPressed,
+    return ClipRRect(
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        child: AppBar(
+          backgroundColor: UIColor.darkPurple,
+          elevation: 0,
+          leading: showBackButton ?
+            Padding(
+              padding: const EdgeInsets.only(left: 16, bottom: 16),
+              child: IconButton(
+                icon: Icon(Icons.chevron_left_rounded, color: UIColor.white, size: 32),
+                onPressed: onLeftButtonPressed,
+              ),
+            )
+            : Padding(
+              padding: const EdgeInsets.only(left: 16, bottom: 16),
+              child: IconButton(
+                icon: Icon(leftIcon, color: UIColor.white, size: 32),
+                onPressed: onLeftButtonPressed,
+              ),
+            ),
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Image.asset(
+              ImageAssets.logoHorizontal, 
+              width: 136,
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16, bottom: 16),
+              child: IconButton(
+                icon: Icon(rightIcon, color: UIColor.white, size: 32),
+                onPressed: onRightButtonPressed,
+              ),
+            ),
+          ],
         ),
-      ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1.0),
-        child: Container(
-          color: Colors.black,
-          height: 1.0,
-        ),
-      ),
-    );
+      );
   }
 
   @override
