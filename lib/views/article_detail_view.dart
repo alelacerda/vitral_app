@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import '../models/article.dart';
 import '../uikit/ui_colors.dart';
+import '../uikit/text_style.dart';
 
 class ArticleDetailView extends StatelessWidget {
   final Article article;
@@ -19,12 +20,21 @@ class ArticleDetailView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-          article.title,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          "Welcome to My Web Page",
+          style: CustomTextStyle.title1,
           ),
           SizedBox(height: 16),
           Html(
           data: article.content,
+          style: {
+            "p": Style(fontFamily: CustomTextStyle.fontFamily),
+            "h1": Style(fontFamily: CustomTextStyle.fontFamily),
+            "h2": Style(fontFamily: CustomTextStyle.fontFamily),
+            "h3": Style(fontFamily: CustomTextStyle.fontFamily),
+            "h4": Style(fontFamily: CustomTextStyle.fontFamily),
+            "h5": Style(fontFamily: CustomTextStyle.fontFamily),
+            "h6": Style(fontFamily: CustomTextStyle.fontFamily),
+          },
           ),
         ],
         ),
