@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:255452689762:android:bf699e411794377daf683b",
         "android_client_info": {
-          "package_name": "dev.vitralapp"
+          "package_name": "com.example.vitral_app"
         }
       },
       "oauth_client": [],

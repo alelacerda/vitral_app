@@ -15,6 +15,7 @@ dependencies:
     git:
       url: https://github.com/cgs/flutter_html
       ref: alpha-6-flutter-322
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:

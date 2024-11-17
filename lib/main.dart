@@ -17,6 +17,7 @@ class MainApp extends StatelessWidget {
       title: 'vitRAl',
       home: const NavigationPage(),
       theme: ThemeData(
+        fontFamily: 'FiraSans',
         primarySwatch: Colors.grey,
         bottomAppBarTheme: const BottomAppBarTheme (
           color: Colors.white,
