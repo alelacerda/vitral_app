@@ -36,7 +36,7 @@ class _ArticlesViewState extends State<ArticlesView> {
   }
 
   void _onCardTap(Article article) {
-    final navigatorKey = context.findAncestorStateOfType<NavigationPageState>()?.navigatorKeys[0];
+    final navigatorKey = context.findAncestorStateOfType<NavigationPageState>()?.navigatorKeys[2];
 
     navigatorKey?.currentState?.push(
       MaterialPageRoute(

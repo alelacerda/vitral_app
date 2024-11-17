@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../uikit/custom_icons.dart';
+import '../uikit/ui_colors.dart';
 
 class CustomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -13,51 +15,69 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Colors.black,
-              width: 1,
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
+        ),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none, // Prevent clipping
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(32),
+              topRight: Radius.circular(32),
+            ),
+            child: BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Image(image: AssetImage(CustomIcons.home), width: 45),
+                  label: "Home",
+                ),
+                BottomNavigationBarItem(
+                  icon: SizedBox.shrink(),
+                  label: "",
+                ),
+                BottomNavigationBarItem(
+                  icon: Image(image: AssetImage(CustomIcons.book), width: 45),
+                  label: "Articles",
+                ),
+              ],
+              currentIndex: selectedIndex,
+              unselectedItemColor: UIColor.white,
+              selectedItemColor: UIColor.white,
+              backgroundColor: UIColor.darkPurple,
+              onTap: onItemTapped,
+              type: BottomNavigationBarType.fixed,
+              selectedFontSize: 12,
+              unselectedFontSize: 12,
+              showUnselectedLabels: false,
+              showSelectedLabels: false,
+              enableFeedback: false,
             ),
           ),
-        ),
-        child: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-              icon: selectedIndex == 0
-                ? const Icon(Icons.book, color: Colors.black, size: 32)
-                : const Icon(Icons.book_outlined, color: Colors.black, size: 32),
-              label: 'Leitura',
+          Positioned(
+            bottom: 32,
+            left: MediaQuery.of(context).size.width / 2 - 49,
+            child: GestureDetector(
+              onTap: () => onItemTapped(1),
+              child: Container(
+                width: 98,
+                height: 98,
+                decoration: BoxDecoration(
+                  color: UIColor.orange,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Image(image: AssetImage(CustomIcons.camera), width: 45),
+                ),
               ),
-            BottomNavigationBarItem(
-              icon: selectedIndex == 1
-                ? const Icon(Icons.home, color: Colors.black, size: 32)
-                : const Icon(Icons.home_outlined, color: Colors.black, size: 32),
-              label: 'Menu',
             ),
-            BottomNavigationBarItem(
-              icon: selectedIndex == 2
-                ? const Icon(Icons.camera_alt, color: Colors.black, size: 32)
-                : const Icon(Icons.camera_alt_outlined, color: Colors.black, size: 32),
-              label: 'RA',
-            ),
-            BottomNavigationBarItem(
-              icon: selectedIndex == 3
-                ? const Icon(Icons.map, color: Colors.black, size: 32)
-                : const Icon(Icons.map_outlined, color: Colors.black, size: 32),
-              label: 'Mapa',
-            ),
-          ],
-          currentIndex: selectedIndex,
-          unselectedItemColor: Colors.black,
-          selectedItemColor: Colors.black,
-          backgroundColor: Colors.white,
-          onTap: onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          showUnselectedLabels: true,
-        ),
+          ),
+        ],
+      ),
     );
   }
 }

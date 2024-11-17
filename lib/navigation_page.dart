@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'views/home_view.dart';
 import 'views/articles_view.dart';
 import 'views/camera_view.dart';
-import 'views/map_view.dart';
 import 'widgets/custom_app_bar.dart';
 import 'widgets/custom_nav_bar.dart';
 import 'widgets/custom_drawer_menu.dart';
@@ -16,10 +15,9 @@ class NavigationPage extends StatefulWidget {
 
 class NavigationPageState extends State<NavigationPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   final List<GlobalKey<NavigatorState>> navigatorKeys = [
-    GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
@@ -102,10 +100,9 @@ class NavigationPageState extends State<NavigationPage> {
         body: IndexedStack(
           index: _selectedIndex,
           children: [
-            _buildNavigator(0, ArticlesView()), 
-            _buildNavigator(1, HomeView()), 
-            _buildNavigator(2, CameraView()),
-            _buildNavigator(3, MapView()),
+            _buildNavigator(0, HomeView()), 
+            _buildNavigator(1, CameraView()),
+            _buildNavigator(2, ArticlesView()), 
           ],
         ),
         bottomNavigationBar: CustomNavBar(
