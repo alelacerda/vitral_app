@@ -26,11 +26,11 @@ class NavigationPageState extends State<NavigationPage> {
   final ValueNotifier<bool> _showBackButtonNotifier = ValueNotifier<bool>(false);
 
   void _onItemTapped(int index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-      navigatorKeys[_selectedIndex].currentState?.popUntil((route) => route.isFirst);
-      updateBackButtonState();
+    setState(() {
+      _selectedIndex = index;
+    });
+    navigatorKeys[_selectedIndex].currentState?.popUntil((route) => route.isFirst);
+    updateBackButtonState();
   }
 
   Future<void> updateBackButtonState() async {
@@ -100,7 +100,7 @@ class NavigationPageState extends State<NavigationPage> {
         body: IndexedStack(
           index: _selectedIndex,
           children: [
-            _buildNavigator(0, HomeView()), 
+            _buildNavigator(0, HomeView(onNavigate: _onItemTapped)), 
             _buildNavigator(1, CameraView()),
             _buildNavigator(2, ArticlesView()), 
           ],
