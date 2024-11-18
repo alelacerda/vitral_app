@@ -92,6 +92,7 @@ class NavigationPageState extends State<NavigationPage> {
                 leftIcon: Icons.menu_rounded,
                 rightIcon: Icons.help_outline,
                 showBackButton: showBackButton,
+                hideLogo: _selectedIndex == 0,
               );
             },
           ),

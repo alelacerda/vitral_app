@@ -9,6 +9,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData leftIcon;
   final IconData rightIcon;
   final showBackButton;
+  final bool hideLogo;
 
   const CustomAppBar({super.key, 
     required this.title,
@@ -16,7 +17,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onRightButtonPressed,
     required this.leftIcon,
     required this.rightIcon,
-    this.showBackButton = false
+    this.showBackButton = false,
+    this.hideLogo = false,
   });
 
   @override
@@ -41,7 +43,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed: onLeftButtonPressed,
               ),
             ),
-          title: Padding(
+          title: hideLogo ? null : Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Image.asset(
               ImageAssets.logoHorizontal, 
