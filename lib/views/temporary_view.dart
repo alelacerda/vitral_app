@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../uikit/images.dart';
+import '../uikit/ui_colors.dart';
 
 class TemporaryView extends StatelessWidget {
   const TemporaryView({Key? key}) : super(key: key);
@@ -7,6 +8,7 @@ class TemporaryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: UIColor.white,
       body: 
         Center(
             child: 
