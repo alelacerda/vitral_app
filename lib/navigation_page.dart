@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'views/home_view.dart';
 import 'views/articles_view.dart';
 import 'views/camera_view.dart';
+import 'views/temporary_view.dart';
+import 'views/about_view.dart';
 import 'widgets/custom_app_bar.dart';
 import 'widgets/custom_nav_bar.dart';
 import 'widgets/custom_drawer_menu.dart';
+
+enum SecondaryView {
+  aboutTheProject,
+  temporaryView,
+}
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -16,6 +23,7 @@ class NavigationPage extends StatefulWidget {
 class NavigationPageState extends State<NavigationPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
+  SecondaryView? _secondaryView;
 
   final List<GlobalKey<NavigatorState>> navigatorKeys = [
     GlobalKey<NavigatorState>(),
@@ -25,9 +33,16 @@ class NavigationPageState extends State<NavigationPage> {
 
   final ValueNotifier<bool> _showBackButtonNotifier = ValueNotifier<bool>(false);
 
+  void navigateToSecondaryView(SecondaryView view) {
+    setState(() {
+      _secondaryView = view;
+    });
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _secondaryView = null;
     });
     navigatorKeys[_selectedIndex].currentState?.popUntil((route) => route.isFirst);
     updateBackButtonState();
@@ -46,6 +61,17 @@ class NavigationPageState extends State<NavigationPage> {
       Navigator.of(context).pop();
     }
     updateBackButtonState();
+  }
+
+  Widget _buildCustomView() {
+    switch (_secondaryView) {
+      case SecondaryView.aboutTheProject:
+        return const AboutView();
+      case SecondaryView.temporaryView:
+        return const TemporaryView();
+      default:
+        return Container(child: const Text('View not found'));
+    }
   }
 
   Widget _buildNavigator(int index, Widget child) {
@@ -92,20 +118,22 @@ class NavigationPageState extends State<NavigationPage> {
                 leftIcon: Icons.menu_rounded,
                 rightIcon: Icons.help_outline,
                 showBackButton: showBackButton,
-                hideLogo: _selectedIndex == 0,
+                hideLogo: _selectedIndex == 0 && _secondaryView == null,
               );
             },
           ),
         ),
-        drawer: const CustomDrawerMenu(),
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: [
-            _buildNavigator(0, HomeView(onNavigate: _onItemTapped)), 
-            _buildNavigator(1, CameraView()),
-            _buildNavigator(2, ArticlesView()), 
-          ],
-        ),
+        drawer: CustomDrawerMenu(onNavigate: navigateToSecondaryView),
+        body: _secondaryView != null
+            ? _buildCustomView()
+            : IndexedStack(
+                index: _selectedIndex,
+                children: [
+                  _buildNavigator(0, HomeView(onNavigate: _onItemTapped)),
+                  _buildNavigator(1, CameraView()),
+                  _buildNavigator(2, ArticlesView()),
+                ],
+              ),
         bottomNavigationBar: CustomNavBar(
           selectedIndex: _selectedIndex,
           onItemTapped: _onItemTapped,
