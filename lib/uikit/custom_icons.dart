@@ -11,4 +11,6 @@ class CustomIcons {
   static const String languages = 'assets/icons/languages_icon.png';
   static const String theme = 'assets/icons/theme_icon.png';
   static const String verticalMenu = 'assets/icons/vertical_menu_icon.png';
+  static const String search = 'assets/icons/search_icon.png';
+  static const String start = 'assets/icons/start_icon.png';
 }

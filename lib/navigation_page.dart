@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'views/home_view.dart';
 import 'views/articles_view.dart';
-import 'views/camera_view.dart';
+import 'views/locations_view.dart';
 import 'views/temporary_view.dart';
 import 'views/about_view.dart';
 import 'widgets/custom_app_bar.dart';
@@ -130,7 +130,7 @@ class NavigationPageState extends State<NavigationPage> {
                 index: _selectedIndex,
                 children: [
                   _buildNavigator(0, HomeView(onNavigate: _onItemTapped)),
-                  _buildNavigator(1, CameraView()),
+                  _buildNavigator(1, LocationsView()),
                   _buildNavigator(2, ArticlesView()),
                 ],
               ),
