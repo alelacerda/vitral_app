@@ -10,13 +10,13 @@ class ArticleCard extends StatelessWidget {
   final VoidCallback onButtonTap;
 
   const ArticleCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.title,
     required this.description,
     required this.onCardTap,
     required this.onButtonTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,66 +30,68 @@ class ArticleCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-          // Image on the left side
-          // ClipRRect(
-          //   borderRadius: BorderRadius.circular(10.0),
-          //   child: Image.network(
-          //     imageUrl,
-          //     height: 80.0,
-          //     width: 80.0,
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-          // SizedBox(width: 10.0),
-
-          // Title and Description
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-            Text(
-              title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: CustomTextStyle.title2.copyWith(color: UIColor.black),
-            ),
-            SizedBox(height: 4.0),
-            Text(
-              description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: CustomTextStyle.body2.copyWith(color: UIColor.black),
-            ),
-              ],
-            ),
-          ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 2), // White border
+                      borderRadius: BorderRadius.circular(10.0), // Match the border radius
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0), // Same radius as the container
+                      child: Image.network(
+                        imageUrl,
+                        height: 80.0,
+                        width: 80.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomTextStyle.title2.copyWith(color: UIColor.black),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Text(
+                      description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: CustomTextStyle.body2.copyWith(color: UIColor.black),
+                    ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8.0),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: ElevatedButton(
+                  onPressed: onButtonTap,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: UIColor.mutedPurple.withAlpha(178),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    'Ler mais...',
+                    style: CustomTextStyle.title3.copyWith(color: UIColor.white),
+                  ),
+                ),
+              ),
             ],
-          ),
-          SizedBox(height: 8.0),
-
-          // 'Ler mais' button
-          Align(
-            alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-          onPressed: onButtonTap,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: UIColor.purple,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-          ),
-          child: Text(
-            'Ler mais...',
-            style: CustomTextStyle.button.copyWith(color: UIColor.white),
-          ),
-            ),
-          ),
-        ],
           ),
         ),
       ),

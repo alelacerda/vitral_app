@@ -10,9 +10,7 @@ class  Api {
     await articles.get()
       .then((QuerySnapshot snapshot) {
         snapshot.docs.forEach((doc) {
-          print(doc.data());
           articlesList.add(Article.fromMap(doc.data() as Map<String, dynamic>));
-          print(articlesList);
         });
       })
       .catchError((error) => print("Failed to fetch users: $error"));

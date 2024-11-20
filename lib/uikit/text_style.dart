@@ -19,6 +19,13 @@ class CustomTextStyle {
     fontWeight: FontWeight.w500,
   );
 
+  // Título mini
+  static const TextStyle title3 = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
+
   // Parágrafo maior
   static const TextStyle body1 = TextStyle(
     fontFamily: fontFamily,
