@@ -6,6 +6,8 @@ class Location {
   final String phone;
   final String workingHours;
   final List<String> stainedGlasses;
+  final String internalMapUrl;
+
   Location({
     required this.name,
     required this.latitude,
@@ -13,7 +15,8 @@ class Location {
     required this.address,
     required this.phone,
     required this.workingHours,
-    required this.stainedGlasses
+    required this.stainedGlasses,
+    required this.internalMapUrl,
   });
 
   factory Location.fromMap(Map<String, dynamic> map) {
@@ -25,6 +28,7 @@ class Location {
       phone: map['phone'],
       workingHours: map['workingHours'],
       stainedGlasses: List<String>.from(map['stainedGlasses'] ?? []),
+      internalMapUrl: map['internalMap'],
     );
   }
 }

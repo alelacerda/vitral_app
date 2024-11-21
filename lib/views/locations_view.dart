@@ -50,7 +50,7 @@ class _LocationsViewState extends State<LocationsView> {
 
     navigatorKey?.currentState?.push(
       MaterialPageRoute(
-        builder: (context) => InternalMapView(),
+        builder: (context) => InternalMapView(imageUrl: location.internalMapUrl),
       ),
     );
     _updateParentBackButtonState();
