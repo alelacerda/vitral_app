@@ -9,6 +9,7 @@ import '../components/rounded_button.dart';
 import '../uikit/text_style.dart';
 import '../uikit/custom_icons.dart';
 import '../navigation_page.dart';
+import 'ar_view.dart';
 
 class LocationsView extends StatefulWidget {
   const LocationsView({super.key});
@@ -64,75 +65,8 @@ class _LocationsViewState extends State<LocationsView> {
   }
 
   void openLocationDetails(Location location) {
-    showBottomSheet(
-      context: context, 
-      showDragHandle: true,
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width - 64,
-      ),
-      elevation: 2.0,
-      backgroundColor: UIColor.lightLilac,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-      ),
-      builder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0), 
-        child: Container(
-          padding: const EdgeInsets.all(0), 
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center, 
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    location.name,
-                    style: CustomTextStyle.title2.copyWith(
-                      color: UIColor.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    location.address,
-                    style: CustomTextStyle.body2.copyWith(
-                      color: UIColor.black,
-                    ),
-                  ),
-                ],  
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RoundedButton(
-                    text: 'Iniciar',
-                    iconName: CustomIcons.start,
-                    onPressed: () {},
-                    color: UIColor.purple,
-                    textColor: UIColor.white,
-                  ),
-                  RoundedButton(
-                    text: 'Ver mapa interno',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      _onOpenInternalMap(location);
-                    },
-                    color: UIColor.white,
-                    textColor: UIColor.purple,
-                    borderColor: UIColor.purple,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-            ]
-          ),
-        ),
-      ),
-    );
+    final navPageState = context.findAncestorStateOfType<NavigationPageState>();
+    navPageState?.showLocationDetailsBottomSheet(context, location);
   }
 
   @override
