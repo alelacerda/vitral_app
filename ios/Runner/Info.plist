@@ -28,6 +28,13 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Este aplicativo necessita de acesso à camera para a funcionalidade de Realidade Aumentada.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>FiraSans-Medium.ttf</string>
+		<string>FiraSans-Bold.ttf</string>
+		<string>FiraSans-Regular.ttf</string>
+		<string>FiraSans-SemiBold.ttf</string>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

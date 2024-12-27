@@ -17,6 +17,7 @@ struct ContentView : View {
                         VStack {
                             Image("camera")
                             Text("RA")
+                                .font(Fonts.button)
                         }
                     }
 
@@ -28,6 +29,7 @@ struct ContentView : View {
                         VStack {
                             Image("home")
                             Text("MENU")
+                                .font(Fonts.button)
                         }
                     }
                 }

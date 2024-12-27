@@ -27,6 +27,7 @@ struct CategoryButton: View {
             VStack(spacing: 4) {
                 Text(category.title.uppercased())
                     .foregroundStyle(.black)
+                    .font(isSelected ? Fonts.title1 : Fonts.title1Regular)
                 
                 if isSelected {
                     RoundedRectangle(cornerRadius: 4)
@@ -52,10 +53,26 @@ enum Category: CaseIterable {
     
     var color: Color {
         switch self {
-        case .funfacts: return .red
-        case .production: return .purple
-        case .credits: return .orange
-        case .meaning: return .pink
+        case .funfacts: return .customOrange
+        case .production: return .customPurple
+        case .credits: return .customYellow
+        case .meaning: return .lilac
+        }
+    }
+    
+    var fadedColor: Color {
+        switch self {
+        case .funfacts: return .orangeFaded
+        case .production: return .purpleFaded
+        case .credits: return .yellowFaded
+        case .meaning: return .lilacFaded
+        }
+    }
+    
+    var titleColor: Color {
+        switch self {
+        case .funfacts, .production: return .white
+        case .credits, .meaning: return .black
         }
     }
 }
