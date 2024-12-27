@@ -2,6 +2,7 @@ import SwiftUI
 import ARKit
 
 struct ContentView : View {
+    var channel: FlutterMethodChannel
     @ObservedObject var arViewModel : ARViewModel = ARViewModel()
     var body: some View {
         ZStack {
@@ -22,7 +23,7 @@ struct ContentView : View {
                     Spacer()
 
                     Button {
-
+                        channel.invokeMethod("goBack", arguments: nil)
                     } label: {
                         VStack {
                             Image("home")

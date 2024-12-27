@@ -5,22 +5,15 @@ import 'package:flutter/services.dart';
 class ARView extends StatelessWidget {
   const ARView({super.key});
 
+  static const MethodChannel _methodChannel = MethodChannel('ar_view_channel');
+
   @override
   Widget build(BuildContext context) {
     if (Platform.isIOS) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('AR View'),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
         body: UiKitView(
           viewType: 'ARView',
-          onPlatformViewCreated: _onPlatformViewCreated,
+          onPlatformViewCreated: (id) => _onPlatformViewCreated(context, id),
         ),
       );
     } else {
@@ -35,7 +28,11 @@ class ARView extends StatelessWidget {
     }
   }
 
-  void _onPlatformViewCreated(int id) {
-    // Handle platform view creation if needed
+  void _onPlatformViewCreated(BuildContext context, int id) {
+    _methodChannel.setMethodCallHandler((call) async {
+      if (call.method == 'goBack') {
+        Navigator.of(context).pop();
+      }
+    });
   }
 }
