@@ -20,6 +20,10 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
     var isImageRecognized : Bool {
         model.isImageRecognized
     }
+    
+    var recognizedImageTag : String? {
+        model.recognizedImageTag
+    }
 
     func startSessionDelegate() {
         model.arView.session.delegate = self
