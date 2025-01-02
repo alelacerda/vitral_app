@@ -4,12 +4,14 @@ import ARKit
 struct ContentView : View {
     var channel: FlutterMethodChannel
     @ObservedObject var arViewModel : ARViewModel = ARViewModel()
+    @State private var stainedGlassInfoArray: [StainedGlassInfo] = []
     var body: some View {
         ZStack {
-            ARViewContainer(arViewModel: arViewModel).edgesIgnoringSafeArea(.all)
+            ARViewControllerWrapper(arViewModel: arViewModel)
+                            .edgesIgnoringSafeArea(.all)
 
             VStack(alignment: .center) {
-
+                CategorySelector()
                 HStack {
                     Button {
                         arViewModel.resetImageRecognizedFlag()
@@ -65,25 +67,26 @@ struct ContentView : View {
                 .bold()
                 .multilineTextAlignment(.center)
         }.onAppear {
-            channel.invokeMethod("getStainedGlassInfo", arguments: tag) { result in
-                if let error = result as? FlutterError {
-                    print("Error: \(error.message ?? "Unknown error")")
-                } else if let stainedGlassInfoList = result as? [[String: Any]] {  // Expecting a list of dictionaries
-                    for (index, stainedGlassInfo) in stainedGlassInfoList.enumerated() {
-                        do {
-                            let jsonData = try JSONSerialization.data(withJSONObject: stainedGlassInfo, options: .prettyPrinted)
-                            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                                print("Stained Glass Info \(index + 1): \(jsonString)")
-                            }
-                        } catch {
-                            print("Error converting dictionary to JSON: \(error.localizedDescription)")
-                        }
-                    }
-                } else {
-                    print("Unknown result type")
-                }
-            }
+            fetchStainedGlassInfo(tag: tag)
         }
         .foregroundColor(.white)
+    }
+    
+    func fetchStainedGlassInfo(tag: String) {
+        channel.invokeMethod("getStainedGlassInfo", arguments: tag) { result in
+            if let error = result as? FlutterError {
+                print("Error: \(error.message ?? "Unknown error")")
+            } else if let stainedGlassInfoList = result as? [[String: Any]] { // Expecting a list of dictionaries
+                let parsedList = stainedGlassInfoList.compactMap { dictionary -> StainedGlassInfo? in
+                    return StainedGlassInfo.fromDictionary(dictionary)
+                }
+                
+                DispatchQueue.main.async {
+                    self.stainedGlassInfoArray = parsedList
+                }
+            } else {
+                print("Unknown result type")
+            }
+        }
     }
 }

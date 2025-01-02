@@ -13,7 +13,7 @@ struct CategorySelector: View {
                     }
                 }
             }.padding(32)
-        }
+        }.background(Color.white)
     }
 }
 

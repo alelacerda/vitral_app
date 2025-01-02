@@ -1,20 +1,14 @@
-//
-//  ARViewContainer.swift
-//  Runner
-//
-//  Created by Alessandra Fernandes Lacerda on 11/12/24.
-//
 import SwiftUI
-import RealityKit
+import ARKit
 
-struct ARViewContainer: UIViewRepresentable {
-    var arViewModel: ARViewModel
+struct ARViewControllerWrapper: UIViewControllerRepresentable {
+    @ObservedObject var arViewModel: ARViewModel
 
-    func makeUIView(context: Context) -> ARView {
-        arViewModel.startSessionDelegate()
-        return arViewModel.arView
+    func makeUIViewController(context: Context) -> ARViewModel {
+        return arViewModel
     }
 
-    func updateUIView(_ uiView: ARView, context: Context) {}
-
+    func updateUIViewController(_ uiViewController: ARViewModel, context: Context) {
+        // Any updates to the ARViewModel if needed.
+    }
 }
