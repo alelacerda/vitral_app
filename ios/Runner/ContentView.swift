@@ -48,6 +48,8 @@ struct ContentView : View {
                         .font(.title)
                 } else if let tag = arViewModel.recognizedImageTag {
                     buildStainedGlassInfoView(tag: tag)
+                    
+                    
                 }
             }
             .padding(.bottom, 50)
@@ -83,6 +85,7 @@ struct ContentView : View {
                 
                 DispatchQueue.main.async {
                     self.stainedGlassInfoArray = parsedList
+                    self.arViewModel.addMarker(color: .customOrange)
                 }
             } else {
                 print("Unknown result type")
