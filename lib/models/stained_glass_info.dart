@@ -32,7 +32,7 @@ class StainedGlassInfo {
       description: map['description'] ?? '',
       category: map['category'] ?? '',
       position: List<double>.from(map['position'] ?? []),
-      imageUrl: map['imageUrl'],
+      imageUrl: map['image-url'],
       articleId: map['article'],
     );
   }

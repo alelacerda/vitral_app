@@ -39,8 +39,22 @@ struct InformationCard: View {
                     .padding(.bottom, 8)
                 
                 HStack {
-                    if let image = informationImage {
-                        Image(image)
+                    if let imageUrl = informationImage, let url = URL(string: imageUrl) {
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                            case .success(let image):
+                                image.resizable()
+                                     .scaledToFit()
+                                     .frame(width: 100, height: 100) // Adjust the frame as needed
+                            case .failure:
+                                Text("Failed to load image")
+                                    .foregroundColor(.red)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
                     }
                     
                     Text(informationDescription)
