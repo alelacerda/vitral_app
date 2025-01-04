@@ -19,10 +19,6 @@ class ArticleDetailView extends StatelessWidget {
         child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-          "Welcome to My Web Page",
-          style: CustomTextStyle.title1,
-          ),
           SizedBox(height: 16),
           Html(
           data: article.content,
