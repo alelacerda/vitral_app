@@ -54,39 +54,40 @@ class _ArticlesViewState extends State<ArticlesView> {
         width: double.infinity,
         height: double.infinity,
         child: isLoading
-            ? const Center(child: CircularProgressIndicator()) 
-            : Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
+            ? const Center(child: CircularProgressIndicator())
+            : CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0), // Add leading and trailing padding
+                      child: Text(
                         viewModel.title,
                         style: CustomTextStyle.title1,
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 16.0),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: viewModel.articles.length,
-                        itemBuilder: (context, index) {
-                          final article = viewModel.articles[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: ArticleCard(
-                              imageUrl: article.image,
-                              title: article.title,
-                              description: article.shortContent,
-                              onCardTap: () => _onCardTap(article),
-                              onButtonTap: () => _onCardTap(article)
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final article = viewModel.articles[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0), // Add leading and trailing padding for cards
+                          child: ArticleCard(
+                            imageUrl: article.image,
+                            title: article.title,
+                            description: article.shortContent,
+                            onCardTap: () => _onCardTap(article),
+                            onButtonTap: () => _onCardTap(article),
+                          ),
+                        );
+                      },
+                      childCount: viewModel.articles.length,
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16.0)), // Optional space at the bottom
+                ],
               ),
       ),
     );
