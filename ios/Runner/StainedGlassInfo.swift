@@ -3,58 +3,34 @@ import Foundation
 struct StainedGlassInfo: Codable {
     let title: String
     let description: String
-    let category: String
+    let category: Category
     let position: [Float]
     let imageUrl: String?
     let articleId: String?
-    
-    init(
-        title: String,
-        description: String,
-        category: String,
-        position: [Float],
-        imageUrl: String? = nil,
-        articleId: String? = nil
-    ) {
-        self.title = title
-        self.description = description
-        self.category = category
-        self.position = position
-        self.imageUrl = imageUrl
-        self.articleId = articleId
+
+    enum CodingKeys: String, CodingKey {
+        case title, description, category, position, imageUrl, articleId
     }
-    
-    func toDictionary() -> [String: Any] {
-        return [
-            "title": title,
-            "description": description,
-            "category": category,
-            "position": position,
-            "imageUrl": imageUrl as Any,
-            "articleId": articleId as Any
-        ]
-    }
-    
-    static func fromDictionary(_ dictionary: [String: Any]) -> StainedGlassInfo? {
-        guard
-            let title = dictionary["title"] as? String,
-            let description = dictionary["description"] as? String,
-            let category = dictionary["category"] as? String,
-            let position = dictionary["position"] as? [Float]
-        else {
-            return nil
+
+    // Custom decoder to handle category as a string
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        title = try container.decode(String.self, forKey: .title)
+        description = try container.decode(String.self, forKey: .description)
+
+        // Decode category as a string and map it to a Category enum
+        let categoryString = try container.decode(String.self, forKey: .category)
+        guard let decodedCategory = Category(rawValue: categoryString) else {
+            throw DecodingError.dataCorruptedError(forKey: .category, in: container, debugDescription: "Invalid category value")
         }
-        
-        let imageUrl = dictionary["imageUrl"] as? String
-        let articleId = dictionary["articleId"] as? String
-        
-        return StainedGlassInfo(
-            title: title,
-            description: description,
-            category: category,
-            position: position,
-            imageUrl: imageUrl,
-            articleId: articleId
-        )
+        category = decodedCategory
+
+        imageUrl = try container.decodeIfPresent(String.self, forKey: .imageUrl)
+        articleId = try container.decodeIfPresent(String.self, forKey: .articleId)
+
+        // Convert [Double] to [Float]
+        let positionArray = try container.decode([Double].self, forKey: .position)
+        position = positionArray.map { Float($0) }
     }
 }

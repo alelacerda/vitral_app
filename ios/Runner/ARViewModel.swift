@@ -6,7 +6,8 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
     @Published var isImageRecognized: Bool = false
     @Published var recognizedImageTag: String?
 
-    var markerEntities: [UUID: ModelEntity] = [:]  // Dictionary to track plane entities by anchor ID
+    var markerEntities: [UUID: ModelEntity] = [:]
+    var backgroundEntities: [UUID: ModelEntity] = [:]
     
     var imageAnchor: ARImageAnchor?
 
@@ -99,6 +100,7 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
 
         // Store the plane entity in the dictionary for future updates
         markerEntities[imageAnchor.identifier] = innerCircleEntity
+        backgroundEntities[imageAnchor.identifier] = circleEntity
     }
 
     // Add tap gesture recognizer to detect taps on planes
@@ -130,5 +132,17 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
         DispatchQueue.main.async {
             self.isImageRecognized = false
         }
+    }
+    
+    func clearMarkers() {
+        for (_, entity) in markerEntities {
+            entity.removeFromParent()
+        }
+        
+        for (_, entity) in backgroundEntities {
+            entity.removeFromParent()
+        }
+        markerEntities.removeAll()
+        backgroundEntities.removeAll()
     }
 }

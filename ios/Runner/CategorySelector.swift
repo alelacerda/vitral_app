@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CategorySelector: View {
     
-    @State private var selectedCategory: Category = .funfacts
+    @Binding var selectedCategory: Category?
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -39,9 +39,12 @@ struct CategoryButton: View {
     }
 }
 
-enum Category: CaseIterable {
-    case funfacts, production, credits, meaning
-    
+enum Category: String, CaseIterable, Codable {
+    case funfacts = "funfact"
+    case production = "production"
+    case credits = "credits"
+    case meaning = "meaning"
+
     var title: String {
         switch self {
         case .funfacts: return "Curiosidades"
@@ -50,7 +53,7 @@ enum Category: CaseIterable {
         case .meaning: return "Significados"
         }
     }
-    
+
     var color: Color {
         switch self {
         case .funfacts: return .customOrange
@@ -59,7 +62,7 @@ enum Category: CaseIterable {
         case .meaning: return .lilac
         }
     }
-    
+
     var fadedColor: Color {
         switch self {
         case .funfacts: return .orangeFaded
@@ -68,7 +71,7 @@ enum Category: CaseIterable {
         case .meaning: return .lilacFaded
         }
     }
-    
+
     var titleColor: Color {
         switch self {
         case .funfacts, .production: return .white
@@ -78,5 +81,6 @@ enum Category: CaseIterable {
 }
 
 #Preview {
-    CategorySelector()
+    @State var category: Category? = .funfacts
+    CategorySelector(selectedCategory: $category)
 }
