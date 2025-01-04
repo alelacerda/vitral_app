@@ -42,6 +42,6 @@ class SwiftUIViewController: NSObject, FlutterPlatformView {
 
     func view() -> UIView {
         let channel = FlutterMethodChannel(name: "ar_view_channel", binaryMessenger: messenger!)
-        return UIHostingController(rootView: ContentView(channel: channel)).view
+        return UIHostingController(rootView: StainedGlassView(channel: channel)).view
     }
 }

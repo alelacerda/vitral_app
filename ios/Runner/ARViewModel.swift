@@ -12,6 +12,7 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
     var imageAnchor: ARImageAnchor?
     var arView: ARView!
     
+    var currentCategoryUUIDs: [UUID] = []
     var onMarkerSelected: ((UUID) -> Category?)?
 
     override func viewDidLoad() {
@@ -89,6 +90,7 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
 
         markerEntities[id] = innerCircleEntity
         backgroundEntities[id] = circleEntity
+        currentCategoryUUIDs.append(id)
     }
 
     private func addTapGestureRecognizer() {
@@ -105,11 +107,18 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
                     
                     if let category = self.onMarkerSelected?(markerUUID),
                        let markerEntity = self.markerEntities[markerUUID] {
+                        // Set the faded color for the tapped marker
                         let fadedMaterial = UnlitMaterial(color: UIColor(category.fadedColor))
                         markerEntity.model?.materials = [fadedMaterial]
+                        
+                        for uuid in self.currentCategoryUUIDs {
+                            
+                            if uuid == markerUUID { continue }
+                            let entity = self.markerEntities[uuid]
+                            entity?.model?.materials = [UnlitMaterial(color: UIColor(category.color))]
+                        }
                     }
                 }
-                print("Marker with UUID \(markerUUID) tapped.")
             }
         }
     }
@@ -130,5 +139,6 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
         }
         markerEntities.removeAll()
         backgroundEntities.removeAll()
+        currentCategoryUUIDs.removeAll()
     }
 }

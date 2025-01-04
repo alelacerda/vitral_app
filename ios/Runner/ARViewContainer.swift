@@ -9,6 +9,5 @@ struct ARViewControllerWrapper: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: ARViewModel, context: Context) {
-        // Any updates to the ARViewModel if needed.
     }
 }

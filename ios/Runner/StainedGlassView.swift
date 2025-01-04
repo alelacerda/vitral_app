@@ -1,7 +1,6 @@
 import SwiftUI
-import ARKit
 
-struct ContentView : View {
+struct StainedGlassView : View {
     var channel: FlutterMethodChannel
     @ObservedObject var arViewModel : ARViewModel = ARViewModel()
     @State private var stainedGlassInfoArray: [StainedGlassInfo] = []
@@ -15,6 +14,7 @@ struct ContentView : View {
                 .onAppear {
                     arViewModel.onMarkerSelected = { markerUUID in
                         stainedGlassInfoArray.first { $0.id == markerUUID }?.category
+                        
                     }
                 }
 
@@ -70,23 +70,23 @@ struct ContentView : View {
                 
                     let infoCategory = stainedGlassInfoArray.filter({$0.category == info.category})
                     
-                    ArticleCard(
+                    InformationCard(
                         category: info.category,
                         article: info.articleId,
-                        articleTitle: info.title,
-                        articleImage: info.imageUrl,
-                        articleDescription: info.description,
-                        currentArticleIndex: infoCategory.firstIndex(where: {$0.id == info.id}) ?? 0,
-                        numberOfArticles: infoCategory.count
+                        informationTitle: info.title,
+                        informationImage: info.imageUrl,
+                        informationDescription: info.description,
+                        currentCardIndex: infoCategory.firstIndex(where: {$0.id == info.id}) ?? 0,
+                        numberOfCards: infoCategory.count
                     )
                     .padding(.horizontal, 20)
                 }
             }
         }
-
     }
     
-    func fetchStainedGlassInfo(tag: String) {
+    // MARK: - Logic
+    private func fetchStainedGlassInfo(tag: String) {
         channel.invokeMethod("getStainedGlassInfo", arguments: tag) { result in
             if let error = result as? FlutterError {
                 print("Error: \(error.message ?? "Unknown error")")
@@ -117,7 +117,7 @@ struct ContentView : View {
         }
     }
     
-    func updateMarkersForCategory(_ category: Category?) {
+    private func updateMarkersForCategory(_ category: Category?) {
         guard let category = category else { return }
         
         let filteredStainedGlassInfoList = stainedGlassInfoArray.filter { $0.category == category }
