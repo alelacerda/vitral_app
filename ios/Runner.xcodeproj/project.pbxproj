@@ -16,7 +16,6 @@
 		4B8E26E22D052D5100C9A4C4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8E26E12D052D5100C9A4C4 /* ContentView.swift */; };
 		4B9702D92D0A6BF40098F9F8 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9702D82D0A6BE80098F9F8 /* ARViewContainer.swift */; };
 		4B9702DB2D0A6C630098F9F8 /* ARKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B9702DA2D0A6C630098F9F8 /* ARKit.framework */; };
-		4B9702DD2D0A6D970098F9F8 /* ARModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9702DC2D0A6D920098F9F8 /* ARModel.swift */; };
 		4B9702DF2D0A6D9F0098F9F8 /* ARViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9702DE2D0A6D9A0098F9F8 /* ARViewModel.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7A7335BB2D1E372F00A92E72 /* CategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A7335BA2D1E372500A92E72 /* CategorySelector.swift */; };
@@ -67,7 +66,6 @@
 		4B8E26E12D052D5100C9A4C4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4B9702D82D0A6BE80098F9F8 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
 		4B9702DA2D0A6C630098F9F8 /* ARKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ARKit.framework; path = System/Library/Frameworks/ARKit.framework; sourceTree = SDKROOT; };
-		4B9702DC2D0A6D920098F9F8 /* ARModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARModel.swift; sourceTree = "<group>"; };
 		4B9702DE2D0A6D9A0098F9F8 /* ARViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewModel.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -186,7 +184,6 @@
 				7A7335BC2D1E3E2400A92E72 /* ArticleCard.swift */,
 				7A7335BA2D1E372500A92E72 /* CategorySelector.swift */,
 				4B9702DE2D0A6D9A0098F9F8 /* ARViewModel.swift */,
-				4B9702DC2D0A6D920098F9F8 /* ARModel.swift */,
 				4B9702D82D0A6BE80098F9F8 /* ARViewContainer.swift */,
 				4B8E26E12D052D5100C9A4C4 /* ContentView.swift */,
 				7A7F6BAB2D2364C50067E6E7 /* StainedGlassInfo.swift */,
@@ -440,7 +437,6 @@
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				4B9702DF2D0A6D9F0098F9F8 /* ARViewModel.swift in Sources */,
 				4B8E26E22D052D5100C9A4C4 /* ContentView.swift in Sources */,
-				4B9702DD2D0A6D970098F9F8 /* ARModel.swift in Sources */,
 				7A7335BB2D1E372F00A92E72 /* CategorySelector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,6 +1,7 @@
 import Foundation
 
 struct StainedGlassInfo: Codable {
+    let id: UUID = UUID()
     let title: String
     let description: String
     let category: Category

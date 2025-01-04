@@ -33,6 +33,9 @@ struct CategoryButton: View {
                     RoundedRectangle(cornerRadius: 4)
                         .fill(category.color)
                         .frame(height: 4)
+                } else {
+                    Spacer()
+                        .frame(height: 4)
                 }
             }
         }

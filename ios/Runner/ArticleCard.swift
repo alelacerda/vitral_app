@@ -4,7 +4,7 @@ struct ArticleCard: View {
     var category: Category
     var article: String?
     var articleTitle: String
-    var articleImage: Image?
+    var articleImage: String?
     var articleDescription: String
     var currentArticleIndex: Int = 0
     var numberOfArticles: Int
@@ -40,10 +40,11 @@ struct ArticleCard: View {
                 
                 HStack {
                     if let image = articleImage {
-                        image
+                        Image(image)
                     }
                     
                     Text(articleDescription)
+                        .multilineTextAlignment(.leading)
                         .font(Fonts.body)
                         .foregroundStyle(.black)
                 }

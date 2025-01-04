@@ -11,12 +11,18 @@ struct ContentView : View {
     var body: some View {
         ZStack {
             ARViewControllerWrapper(arViewModel: arViewModel)
-                            .edgesIgnoringSafeArea(.all)
+                .edgesIgnoringSafeArea(.all)
+                .onAppear {
+                    arViewModel.onMarkerSelected = { markerUUID in
+                        stainedGlassInfoArray.first { $0.id == markerUUID }?.category
+                    }
+                }
 
             VStack(alignment: .center) {
                 CategorySelector(selectedCategory: $selectedCategory)
                     .onChange(of: selectedCategory) { category in
                         updateMarkersForCategory(category)
+                        arViewModel.selectedMarker = nil
                     }
                 HStack {
                     Button {
@@ -28,9 +34,9 @@ struct ContentView : View {
                                 .font(Fonts.button)
                         }
                     }
-
+                    
                     Spacer()
-
+                    
                     Button {
                         channel.invokeMethod("goBack", arguments: nil)
                     } label: {
@@ -43,7 +49,7 @@ struct ContentView : View {
                 }
                 .foregroundStyle(.white)
                 .padding(30)
-
+                
                 Spacer()
                 
                 if !arViewModel.isImageRecognized {
@@ -52,32 +58,32 @@ struct ContentView : View {
                         .frame(width: 50, height: 50)
                     Text("Aponte sua câmera\npara o vitral".uppercased())
                         .font(.title)
-                } else if let tag = arViewModel.recognizedImageTag {
-                    buildStainedGlassInfoView(tag: tag)
+                        .padding(.bottom, 50)
+                        .multilineTextAlignment(.center)
+                        .onDisappear {
+                            if let tag = arViewModel.recognizedImageTag {
+                                fetchStainedGlassInfo(tag: tag)
+                            }
+                        }
+                }
+                else if let stainedGlassInfoId = arViewModel.selectedMarker, let info  = stainedGlassInfoArray.first(where: {$0.id == stainedGlassInfoId}) {
+                
+                    let infoCategory = stainedGlassInfoArray.filter({$0.category == info.category})
                     
-                    
+                    ArticleCard(
+                        category: info.category,
+                        article: info.articleId,
+                        articleTitle: info.title,
+                        articleImage: info.imageUrl,
+                        articleDescription: info.description,
+                        currentArticleIndex: infoCategory.firstIndex(where: {$0.id == info.id}) ?? 0,
+                        numberOfArticles: infoCategory.count
+                    )
+                    .padding(.horizontal, 20)
                 }
             }
-            .padding(.bottom, 50)
-            .multilineTextAlignment(.center)
         }
 
-    }
-    
-    @ViewBuilder
-    func buildStainedGlassInfoView(tag: String) -> some View {
-        VStack {
-            Text("Imagem reconhecida:")
-                .font(.headline)
-                .padding(.bottom, 5)
-            Text(tag)
-                .font(.largeTitle)
-                .bold()
-                .multilineTextAlignment(.center)
-        }.onAppear {
-            fetchStainedGlassInfo(tag: tag)
-        }
-        .foregroundColor(.white)
     }
     
     func fetchStainedGlassInfo(tag: String) {
@@ -90,12 +96,15 @@ struct ContentView : View {
                     DispatchQueue.main.async {
                         self.stainedGlassInfoArray = stainedGlassInfoList
                         
+                        self.selectedCategory = .funfacts
+                        
                         let filteredStainedGlassInfoList = stainedGlassInfoList.filter { $0.category == self.selectedCategory }
                         for stainedGlassInfo in filteredStainedGlassInfoList {
                             self.arViewModel.addMarker(
                                 x: stainedGlassInfo.position[0],
                                 z: stainedGlassInfo.position[1],
-                                color: UIColor(stainedGlassInfo.category.color)
+                                color: UIColor(stainedGlassInfo.category.color),
+                                id: stainedGlassInfo.id
                             )
                         }
                     }
@@ -111,18 +120,16 @@ struct ContentView : View {
     func updateMarkersForCategory(_ category: Category?) {
         guard let category = category else { return }
         
-        // Filter the stained glass info by the selected category
         let filteredStainedGlassInfoList = stainedGlassInfoArray.filter { $0.category == category }
         
-        // Clear existing markers
         arViewModel.clearMarkers()
         
-        // Add new markers for the selected category
         for stainedGlassInfo in filteredStainedGlassInfoList {
             arViewModel.addMarker(
                 x: stainedGlassInfo.position[0],
                 z: stainedGlassInfo.position[1],
-                color: UIColor(stainedGlassInfo.category.color)
+                color: UIColor(stainedGlassInfo.category.color),
+                id: stainedGlassInfo.id
             )
         }
     }
