@@ -42,7 +42,7 @@ class _LocationsViewState extends State<LocationsView> {
     });
   }
 
-  void openLocationDetails(BuildContext context, Location location) {
+  void openLocationDetails(Location location) {
     widget.openLocationDetails(context, location);
   }
 
@@ -78,7 +78,7 @@ class _LocationsViewState extends State<LocationsView> {
                               address: location.address,
                               phone: location.phone,
                               workingHours: location.workingHours,
-                              onPressed: () => openLocationDetails(context, location),
+                              onPressed: () => openLocationDetails(location),
                             ),
                           );
                         },
