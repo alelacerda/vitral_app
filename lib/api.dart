@@ -24,6 +24,23 @@ class  Api {
     return articlesList;
   }
 
+  static Future<Article> fetchArticleWithId(String id) async {
+    DocumentReference article = FirebaseFirestore.instance.collection('articles').doc(id);
+    
+    try {
+      DocumentSnapshot snapshot = await article.get();
+      if (snapshot.exists && snapshot.data() != null) {
+        return Article.fromMap(snapshot.data() as Map<String, dynamic>);
+      } else {
+        print("Document does not exist or contains no data.");
+        return Article.empty(); // Return an empty article if the document doesn't exist or has no data.
+      }
+    } catch (error) {
+      print("Failed to fetch article: $error");
+      return Article.empty(); // Return an empty article if there's an error.
+    }
+  }
+
   static Future<List<Location>> fetchLocations() async {
     CollectionReference locations = FirebaseFirestore.instance.collection('locations');
     List<Location> locationsList = [];

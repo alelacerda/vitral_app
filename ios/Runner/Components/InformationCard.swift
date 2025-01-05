@@ -9,6 +9,8 @@ struct InformationCard: View {
     var currentCardIndex: Int = 0
     var numberOfCards: Int
     
+    var showArticle: (String) -> Void
+    
     var body: some View {
         
         VStack {
@@ -20,8 +22,8 @@ struct InformationCard: View {
                     .background(category.color)
                     .cornerRadius(16)
                 Spacer()
-                if article != nil {
-                    Button(action: {}) {
+                if let article = article {
+                    Button(action: { showArticle(article) } ) {
                         Text(" Ler artigo ")
                             .font(Fonts.title2)
                             .foregroundStyle(.black)
@@ -99,7 +101,17 @@ struct ArticleIndicator:View {
 }
 
 #Preview {
-    InformationCard(category: .meaning, article: "", informationTitle: "Qual o significado deste vitral?", informationDescription: "Utilização do estructural glazing, um sistema na forma de sanduíche de 5 lâminas de vidro, películas anti-raios UVA e UVB separadas por gás argônio, tudo encapsulado a vácuo.", numberOfCards: 5)
-        .padding()
-        .background(.gray)
+    InformationCard(
+        category: .meaning,
+        article: "aaa",
+        informationTitle: "Qual o significado deste vitral?",
+        informationDescription: "Utilização do estructural glazing, um sistema na forma de sanduíche de 5 lâminas de vidro, películas anti-raios UVA e UVB separadas por gás argônio, tudo encapsulado a vácuo.",
+        numberOfCards: 5,
+        showArticle: { article in
+            print("Mock show article: \(article)")
+        }
+    )
+    .padding()
+    .background(.gray)
 }
+

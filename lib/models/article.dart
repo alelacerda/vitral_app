@@ -27,4 +27,13 @@ class Article {
       shortContent: shortContent
     );
   }
+
+  static Article empty() {
+    return Article(
+      image: '',
+      title: '',
+      content: '',
+      shortContent: ''
+    );
+  }
 }
