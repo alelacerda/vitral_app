@@ -8,7 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onRightButtonPressed;
   final IconData leftIcon;
   final IconData rightIcon;
-  final showBackButton;
+  final bool showBackButton;
   final bool hideLogo;
 
   const CustomAppBar({super.key, 
@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
         child: AppBar(
           backgroundColor: UIColor.darkPurple,
           elevation: 0,
@@ -32,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             Padding(
               padding: const EdgeInsets.only(left: 16, bottom: 16),
               child: IconButton(
-                icon: Icon(Icons.chevron_left_rounded, color: UIColor.white, size: 32),
+                icon: const Icon(Icons.chevron_left_rounded, color: UIColor.white, size: 32),
                 onPressed: onLeftButtonPressed,
               ),
             )

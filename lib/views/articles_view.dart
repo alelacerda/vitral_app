@@ -10,10 +10,10 @@ class ArticlesView extends StatefulWidget {
   const ArticlesView({super.key, required this.onNavigate});
 
   @override
-  _ArticlesViewState createState() => _ArticlesViewState();
+  ArticlesViewState createState() => ArticlesViewState();
 }
 
-class _ArticlesViewState extends State<ArticlesView> {
+class ArticlesViewState extends State<ArticlesView> {
   final ArticlesViewModel viewModel = ArticlesViewModel();
   bool isLoading = true;
 

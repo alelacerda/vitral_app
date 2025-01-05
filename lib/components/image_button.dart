@@ -11,8 +11,8 @@ class ImageButton extends StatelessWidget {
     required this.onPressed,
     this.width,
     this.height,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/services.dart';
 import '../api.dart';
 import '../models/article.dart';
-import '../models/stained_glass.dart';
 
 
 class ARView extends StatelessWidget {
@@ -67,7 +66,6 @@ class ARView extends StatelessWidget {
   Future<void> _handleNavigateToArticle(context, dynamic arguments) async {
     final article = await Api.fetchArticleWithId(arguments);
 
-    print("Navigating to article: ${article.title}");
     onNavigateToArticle(context, article);
   }
   Future<Map<String, dynamic>> getStainedGlass(arguments) async {

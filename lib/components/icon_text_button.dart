@@ -7,7 +7,8 @@ class IconTextButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
-  IconTextButton({
+  const IconTextButton({
+    super.key, 
     required this.iconName,
     required this.text,
     required this.onPressed,

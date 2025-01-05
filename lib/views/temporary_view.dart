@@ -3,7 +3,7 @@ import '../uikit/images.dart';
 import '../uikit/ui_colors.dart';
 
 class TemporaryView extends StatelessWidget {
-  const TemporaryView({Key? key}) : super(key: key);
+  const TemporaryView({super.key});
 
   @override
   Widget build(BuildContext context) {

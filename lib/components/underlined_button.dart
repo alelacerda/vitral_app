@@ -9,8 +9,8 @@ class UnderlinedButton extends StatelessWidget {
   const UnderlinedButton({
     required this.text,
     required this.onPressed,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

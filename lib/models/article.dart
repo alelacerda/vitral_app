@@ -17,7 +17,7 @@ class Article {
     // get content inside <p> tag to show in the card and limit the lenght to 100 characters
     String shortContent = content.substring(content.indexOf('<p>') + 3, content.indexOf('</p>'));
     if (shortContent.length > 100) {
-      shortContent = shortContent.substring(0, 100) + '...';
+      shortContent = '${shortContent.substring(0, 100)}...';
     }
 
     return Article(

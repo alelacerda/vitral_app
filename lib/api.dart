@@ -12,9 +12,9 @@ class  Api {
     
     await articles.get()
       .then((QuerySnapshot snapshot) {
-        snapshot.docs.forEach((doc) {
+        for (var doc in snapshot.docs) {
           articlesList.add(Article.fromMap(doc.data() as Map<String, dynamic>));
-        });
+        }
       })
       .catchError((error) {
         print("Failed to fetch articles: $error");
@@ -47,9 +47,9 @@ class  Api {
     
     await locations.get()
       .then((QuerySnapshot snapshot) {
-        snapshot.docs.forEach((doc) {
+        for (var doc in snapshot.docs) {
           locationsList.add(Location.fromMap(doc.data() as Map<String, dynamic>));
-        });
+        }
       })
       .catchError((error) {
         print("Failed to fetch locations: $error");
@@ -88,7 +88,7 @@ class  Api {
     try {
       final snapshot = await stainedGlasses.where(FieldPath.documentId, whereIn: ids).get();
 
-      snapshot.docs.forEach((doc) {
+      for (var doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
 
         try {
@@ -96,7 +96,7 @@ class  Api {
         } catch (e) {
           print("Error parsing document: $e");
         }
-      });
+      }
     } catch (error) {
       print("Failed to fetch stained glasses info: $error");
       return [];

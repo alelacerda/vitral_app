@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../uikit/ui_colors.dart';
-import '../models/location.dart';
-import '../view_models/locations_view_model.dart';
 import '../components/location_card.dart';
 import '../components/search_bar.dart';
+import '../models/location.dart';
+import '../uikit/ui_colors.dart';
+import '../view_models/locations_view_model.dart';
 
 class LocationsView extends StatefulWidget {
 
@@ -11,10 +11,10 @@ class LocationsView extends StatefulWidget {
   const LocationsView({super.key, required this.openLocationDetails});
 
   @override
-  _LocationsViewState createState() => _LocationsViewState();
+  LocationsViewState createState() => LocationsViewState();
 }
 
-class _LocationsViewState extends State<LocationsView> {
+class LocationsViewState extends State<LocationsView> {
   final LocationsViewModel viewModel = LocationsViewModel();
   bool isLoading = true;
   String searchQuery = "";

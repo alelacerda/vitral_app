@@ -23,10 +23,10 @@ class AboutView extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // Show a loading indicator while the file is being loaded
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             // Show an error message if something goes wrong
-            return Center(child: Text('Error loading HTML content'));
+            return const Center(child: Text('Error loading HTML content'));
           } else if (snapshot.hasData) {
             // If the data is available, display the HTML content
             return SingleChildScrollView(
@@ -52,7 +52,7 @@ class AboutView extends StatelessWidget {
               ),
             );
           } else {
-            return Center(child: Text('No content available'));
+            return const Center(child: Text('No content available'));
           }
         },
       ),

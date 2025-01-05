@@ -66,11 +66,11 @@ class CustomNavBar extends StatelessWidget {
               child: Container(
                 width: 98,
                 height: 98,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: UIColor.orange,
                   shape: BoxShape.circle,
                 ),
-                child: Center(
+                child: const Center(
                   child: Image(image: AssetImage(CustomIcons.camera), width: 45),
                 ),
               ),

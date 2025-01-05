@@ -6,7 +6,7 @@ import '../uikit/images.dart';
 class HomeView extends StatelessWidget {
   final Function(int) onNavigate;
 
-  HomeView({super.key, required this.onNavigate});
+  const HomeView({super.key, required this.onNavigate});
 
   @override
   Widget build(BuildContext context) {

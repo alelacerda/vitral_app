@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'views/home_view.dart';
-import 'views/articles_view.dart';
-import 'views/locations_view.dart';
-import 'views/temporary_view.dart';
-import 'views/about_view.dart';
-import 'widgets/custom_app_bar.dart';
-import 'widgets/custom_nav_bar.dart';
-import 'widgets/custom_drawer_menu.dart';
 import '../components/rounded_button.dart';
-import '../uikit/text_style.dart';
-import '../uikit/custom_icons.dart';
-import '../uikit/ui_colors.dart';
 import '../models/location.dart';
-import 'views/internal_map_view.dart';
+import '../models/article.dart';
+import '../uikit/custom_icons.dart';
+import '../uikit/text_style.dart';
+import '../uikit/ui_colors.dart';
+import 'views/about_view.dart';
 import 'views/ar_view.dart';
 import 'views/article_detail_view.dart';
-import 'models/article.dart';
+import 'views/articles_view.dart';
+import 'views/home_view.dart';
+import 'views/internal_map_view.dart';
+import 'views/locations_view.dart';
+import 'views/temporary_view.dart';
+import 'widgets/custom_app_bar.dart';
+import 'widgets/custom_drawer_menu.dart';
+import 'widgets/custom_nav_bar.dart';
 
 enum SecondaryView {
   aboutTheProject,
@@ -30,18 +30,22 @@ class NavigationPage extends StatefulWidget {
 }
 
 class NavigationPageState extends State<NavigationPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // MARK: - State variables
   int _selectedIndex = 0;
   SecondaryView? _secondaryView;
 
+  // MARK: - Global keys
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<GlobalKey<NavigatorState>> navigatorKeys = [
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
   ];
 
+  // MARK: - Notifiers
   final ValueNotifier<bool> _showBackButtonNotifier = ValueNotifier<bool>(false);
 
+  // MARK: - Bottom sheet controller
   PersistentBottomSheetController? _bottomSheetController;
 
   // MARK: - Navigation methods
@@ -102,7 +106,7 @@ class NavigationPageState extends State<NavigationPage> {
     final isFirstRouteInCurrentTab = !await navigatorKeys[_selectedIndex]
         .currentState!
         .maybePop();
-    if (isFirstRouteInCurrentTab) {
+    if (isFirstRouteInCurrentTab && mounted) {
       Navigator.of(context).pop();
     }
     updateBackButtonState();
@@ -114,7 +118,7 @@ class NavigationPageState extends State<NavigationPage> {
       onGenerateRoute: (routeSettings) {
         return MaterialPageRoute(
           builder: (context) => PopScope(
-            onPopInvoked: (value) {
+            onPopInvokedWithResult: (value, result) {
               if (navigatorKeys[index].currentState!.canPop()) {
                 navigatorKeys[index].currentState!.pop();
                 updateBackButtonState();
@@ -213,7 +217,7 @@ class NavigationPageState extends State<NavigationPage> {
 
   // MARK: - UI update methods
   Future<void> updateBackButtonState() async {
-    bool canPop = await navigatorKeys[_selectedIndex].currentState?.canPop() ?? false;
+    bool canPop = navigatorKeys[_selectedIndex].currentState?.canPop() ?? false;
     _showBackButtonNotifier.value = canPop;
   }
 
@@ -224,14 +228,14 @@ class NavigationPageState extends State<NavigationPage> {
       case SecondaryView.temporaryView:
         return const TemporaryView();
       default:
-        return Container(child: const Text('View not found'));
+        return const Text('View not found');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (value) => _onWillPop(value),
+      onPopInvokedWithResult: (value, result) => _onWillPop(value),
       child: Scaffold(
         key: _scaffoldKey,
         appBar: PreferredSize(
