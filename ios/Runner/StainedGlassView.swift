@@ -26,7 +26,7 @@ struct StainedGlassView : View {
                     }
                 HStack {
                     Button {
-                        arViewModel.resetImageRecognizedFlag()
+                        arViewModel.resetTrackedImage()
                     } label: {
                         VStack {
                             Image("camera")

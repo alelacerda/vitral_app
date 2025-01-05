@@ -39,7 +39,7 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
         configuration.maximumNumberOfTrackedImages = 1
         configuration.automaticImageScaleEstimationEnabled = true
 
-        arView.session.run(configuration)
+        arView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
 
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
@@ -123,9 +123,20 @@ class ARViewModel: UIViewController, ObservableObject, ARSessionDelegate {
         }
     }
 
-    func resetImageRecognizedFlag() {
+    func resetTrackedImage() {
         DispatchQueue.main.async {
+            // Clear variables
             self.isImageRecognized = false
+            self.clearMarkers()
+            self.recognizedImageTag = nil
+            self.selectedMarker = nil
+            self.imageAnchor = nil
+            
+            // Stop the AR session
+            self.arView.session.pause()
+            
+            // Restart the AR session with the original configuration
+            self.setupImageTracking()
         }
     }
     
