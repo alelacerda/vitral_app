@@ -1,11 +1,8 @@
 plugins {
-    id "com.android.application"
-    // START: FlutterFire Configuration
+    id 'com.android.application'
+    id 'kotlin-android'
     id 'com.google.gms.google-services'
-    // END: FlutterFire Configuration
-    id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id "dev.flutter.flutter-gradle-plugin"
+    id 'dev.flutter.flutter-gradle-plugin'
 }
 
 def localProperties = new Properties()
@@ -28,8 +25,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.example.vitral_app"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk 35
+    ndkVersion = ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -54,6 +51,12 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+}
+
+dependencies { 
+    implementation 'com.google.ar:core:1.33.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+
 }
 
 flutter {

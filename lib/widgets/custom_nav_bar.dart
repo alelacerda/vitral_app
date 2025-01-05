@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../uikit/custom_icons.dart';
 import '../uikit/ui_colors.dart';
+import 'dart:io' show Platform;
 
 class CustomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -59,7 +60,7 @@ class CustomNavBar extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 32,
+            bottom: Platform.isIOS ? 32 : 0,
             left: MediaQuery.of(context).size.width / 2 - 49,
             child: GestureDetector(
               onTap: () => onItemTapped(1),

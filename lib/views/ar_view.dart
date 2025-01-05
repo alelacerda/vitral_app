@@ -21,6 +21,13 @@ class ARView extends StatelessWidget {
           onPlatformViewCreated: (id) => _onPlatformViewCreated(context, id),
         ),
       );
+    } else if (Platform.isAndroid) {
+      return Scaffold(
+        body: AndroidView(
+          viewType: 'ARView',
+          onPlatformViewCreated: (id) => _onPlatformViewCreated(context, id),
+        ),
+      );
     } else {
       return Scaffold(
         appBar: AppBar(
