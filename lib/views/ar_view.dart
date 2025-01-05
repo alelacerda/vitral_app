@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/services.dart';
-import 'package:vitral_app/models/stained_glass.dart';
 import '../api.dart';
+import '../models/article.dart';
+import '../models/stained_glass.dart';
 
 
 class ARView extends StatelessWidget {
-  const ARView({super.key});
+  final Function(BuildContext, Article) onNavigateToArticle;
+
+  const ARView({super.key, required this.onNavigateToArticle});
 
   static const MethodChannel _methodChannel = MethodChannel('ar_view_channel');
 
@@ -61,6 +64,12 @@ class ARView extends StatelessWidget {
     }
   }
 
+  Future<void> _handleNavigateToArticle(context, dynamic arguments) async {
+    final article = await Api.fetchArticleWithId(arguments);
+
+    print("Navigating to article: ${article.title}");
+    onNavigateToArticle(context, article);
+  }
   Future<Map<String, dynamic>> getStainedGlass(arguments) async {
     try {
       final stainedGlass = await Api.fetchStainedGlass(arguments);
@@ -81,6 +90,7 @@ class ARView extends StatelessWidget {
       final methodHandlers = {
         'goBack': () => _handleGoBack(context),
         'getStainedGlassInfo': () => _handleGetStainedGlassInfo(call.arguments),
+        'goToArticle': () => _handleNavigateToArticle(context, call.arguments),
       };
 
       final handler = methodHandlers[call.method];

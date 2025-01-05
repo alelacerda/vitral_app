@@ -79,7 +79,7 @@ struct StainedGlassView : View {
                         currentCardIndex: infoCategory.firstIndex(where: {$0.id == info.id}) ?? 0,
                         numberOfCards: infoCategory.count,
                         showArticle: { article in
-                            print("Mock show article: \(article)") }
+                            channel.invokeMethod("goToArticle", arguments: article) }
                     )
                     .padding(.horizontal, 20)
                 }

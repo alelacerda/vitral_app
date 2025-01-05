@@ -4,11 +4,10 @@ import '../view_models/articles_view_model.dart';
 import '../components/article_card.dart';
 import '../uikit/ui_colors.dart';
 import '../uikit/text_style.dart';
-import 'article_detail_view.dart';
-import '../navigation_page.dart';
 
 class ArticlesView extends StatefulWidget {
-  const ArticlesView({super.key});
+  final Function(Article) onNavigate;
+  const ArticlesView({super.key, required this.onNavigate});
 
   @override
   _ArticlesViewState createState() => _ArticlesViewState();
@@ -18,6 +17,7 @@ class _ArticlesViewState extends State<ArticlesView> {
   final ArticlesViewModel viewModel = ArticlesViewModel();
   bool isLoading = true;
 
+  // MARK: - Lifecycle methods
   @override
   void initState() {
     super.initState();
@@ -28,24 +28,11 @@ class _ArticlesViewState extends State<ArticlesView> {
     });
   }
 
-  void _updateParentBackButtonState() {
-    final navPageState = context.findAncestorStateOfType<NavigationPageState>();
-    if (navPageState != null) {
-      navPageState.updateBackButtonState();
-    }
+  void onNavigate(Article article) {
+    widget.onNavigate(article);
   }
 
-  void _onCardTap(Article article) {
-    final navigatorKey = context.findAncestorStateOfType<NavigationPageState>()?.navigatorKeys[2];
-
-    navigatorKey?.currentState?.push(
-      MaterialPageRoute(
-        builder: (context) => ArticleDetailView(article: article),
-      ),
-    );
-    _updateParentBackButtonState();
-  }
-
+  // MARK: - Build method
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,8 +65,8 @@ class _ArticlesViewState extends State<ArticlesView> {
                             imageUrl: article.image,
                             title: article.title,
                             description: article.shortContent,
-                            onCardTap: () => _onCardTap(article),
-                            onButtonTap: () => _onCardTap(article),
+                            onCardTap: () => onNavigate(article),
+                            onButtonTap: () => onNavigate(article),
                           ),
                         );
                       },

@@ -14,6 +14,8 @@ import '../uikit/ui_colors.dart';
 import '../models/location.dart';
 import 'views/internal_map_view.dart';
 import 'views/ar_view.dart';
+import 'views/article_detail_view.dart';
+import 'models/article.dart';
 
 enum SecondaryView {
   aboutTheProject,
@@ -42,6 +44,90 @@ class NavigationPageState extends State<NavigationPage> {
 
   PersistentBottomSheetController? _bottomSheetController;
 
+  // MARK: - Navigation methods
+  void navigateToArticleDetails(Article article) {
+    final navigatorKey = navigatorKeys[2];
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => ArticleDetailView(article: article),
+      ),
+    );
+    updateBackButtonState();
+  }
+
+  void navigateToArticleDetailsFromAR(BuildContext arContext, Article article) {
+    //pop the ARView
+    Navigator.of(arContext).pop();
+
+    // navigate to the article detail view
+    final navigatorKey = navigatorKeys[2];
+    _onItemTapped(2);
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => ArticleDetailView(article: article),
+      ),
+    );
+    updateBackButtonState();
+  }
+
+  void navigateToInternalMap(BuildContext context, Location location) {
+    Navigator.of(context).pop();
+
+    final navigatorKey = navigatorKeys[1];
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => InternalMapView(imageUrl: location.internalMapUrl),
+      ),
+    );
+    updateBackButtonState();
+  }
+
+  void navigateToSecondaryView(SecondaryView view) {
+    setState(() {
+      _secondaryView = view;
+    });
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _secondaryView = null;
+    });
+    navigatorKeys[_selectedIndex].currentState?.popUntil((route) => route.isFirst);
+    updateBackButtonState();
+    dismissBottomSheet();
+  }
+
+  void _onWillPop(bool value) async {
+    final isFirstRouteInCurrentTab = !await navigatorKeys[_selectedIndex]
+        .currentState!
+        .maybePop();
+    if (isFirstRouteInCurrentTab) {
+      Navigator.of(context).pop();
+    }
+    updateBackButtonState();
+  }
+
+  Widget _buildNavigator(int index, Widget child) {
+    return Navigator(
+      key: navigatorKeys[index],
+      onGenerateRoute: (routeSettings) {
+        return MaterialPageRoute(
+          builder: (context) => PopScope(
+            onPopInvoked: (value) {
+              if (navigatorKeys[index].currentState!.canPop()) {
+                navigatorKeys[index].currentState!.pop();
+                updateBackButtonState();
+              }
+            },
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
+  // MARK: - Bottom sheet methods
   void showLocationDetailsBottomSheet(BuildContext context, Location location) {
     _bottomSheetController?.close();
     _bottomSheetController = showBottomSheet(
@@ -94,7 +180,7 @@ class NavigationPageState extends State<NavigationPage> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const ARView(),
+                          builder: (context) => ARView(onNavigateToArticle: navigateToArticleDetailsFromAR),
                           fullscreenDialog: true,
                         ),
                       );
@@ -105,15 +191,7 @@ class NavigationPageState extends State<NavigationPage> {
                   RoundedButton(
                     text: 'Ver mapa interno',
                     onPressed: () {
-                      Navigator.of(context).pop();
-                      final navigatorKey = context.findAncestorStateOfType<NavigationPageState>()?.navigatorKeys[1];
-                      navigatorKey?.currentState?.push(
-                        MaterialPageRoute(
-                          builder: (context) => InternalMapView(imageUrl: location.internalMapUrl),
-                        ),
-                      );
-                      final navPageState = context.findAncestorStateOfType<NavigationPageState>();
-                      navPageState?.updateBackButtonState();
+                      navigateToInternalMap(context, location);
                     },
                     color: UIColor.white,
                     textColor: UIColor.purple,
@@ -133,35 +211,10 @@ class NavigationPageState extends State<NavigationPage> {
     _bottomSheetController?.close();
   }
 
-  void navigateToSecondaryView(SecondaryView view) {
-    setState(() {
-      _secondaryView = view;
-    });
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      _secondaryView = null;
-    });
-    navigatorKeys[_selectedIndex].currentState?.popUntil((route) => route.isFirst);
-    updateBackButtonState();
-    dismissBottomSheet();
-  }
-
+  // MARK: - UI update methods
   Future<void> updateBackButtonState() async {
     bool canPop = await navigatorKeys[_selectedIndex].currentState?.canPop() ?? false;
     _showBackButtonNotifier.value = canPop;
-  }
-
-  void _onWillPop(bool value) async {
-    final isFirstRouteInCurrentTab = !await navigatorKeys[_selectedIndex]
-        .currentState!
-        .maybePop();
-    if (isFirstRouteInCurrentTab) {
-      Navigator.of(context).pop();
-    }
-    updateBackButtonState();
   }
 
   Widget _buildCustomView() {
@@ -173,25 +226,6 @@ class NavigationPageState extends State<NavigationPage> {
       default:
         return Container(child: const Text('View not found'));
     }
-  }
-
-  Widget _buildNavigator(int index, Widget child) {
-    return Navigator(
-      key: navigatorKeys[index],
-      onGenerateRoute: (routeSettings) {
-        return MaterialPageRoute(
-          builder: (context) => PopScope(
-            onPopInvoked: (value) {
-              if (navigatorKeys[index].currentState!.canPop()) {
-                navigatorKeys[index].currentState!.pop();
-                updateBackButtonState();
-              }
-            },
-            child: child,
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -231,8 +265,8 @@ class NavigationPageState extends State<NavigationPage> {
                 index: _selectedIndex,
                 children: [
                   _buildNavigator(0, HomeView(onNavigate: _onItemTapped)),
-                  _buildNavigator(1, LocationsView()),
-                  _buildNavigator(2, ArticlesView()),
+                  _buildNavigator(1, LocationsView(openLocationDetails: showLocationDetailsBottomSheet)),
+                  _buildNavigator(2, ArticlesView(onNavigate: navigateToArticleDetails)),
                 ],
               ),
         bottomNavigationBar: CustomNavBar(
