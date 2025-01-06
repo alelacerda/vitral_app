@@ -5,6 +5,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.ComposeView
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 
@@ -27,9 +29,25 @@ class ARView(context: Context, private val methodChannel: MethodChannel) : Platf
         }
     }
 
+     private val composeView: ComposeView = ComposeView(context).apply {
+         setContent {
+             ComposeContent()
+         }
+     }
+
     init {
         layout.addView(textView)
         layout.addView(button)
+        layout.addView(composeView) 
+    }
+
+    @Composable
+    fun ComposeContent() {
+        var selectedCategory by remember { mutableStateOf<Category?>(Category.FUNFACTS) }
+        CategorySelector(
+            selectedCategory = selectedCategory,
+            onCategorySelected = { selectedCategory = it }
+        )
     }
 
     override fun getView(): View {
@@ -37,7 +55,6 @@ class ARView(context: Context, private val methodChannel: MethodChannel) : Platf
     }
 
     override fun dispose() {
-        // Clean up the MethodChannel listener
         methodChannel.setMethodCallHandler(null)
     }
 }
