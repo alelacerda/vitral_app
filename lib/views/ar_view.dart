@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../api.dart';
 import '../models/article.dart';
 
-
 class ARView extends StatelessWidget {
   final Function(BuildContext, Article) onNavigateToArticle;
 
@@ -23,9 +22,11 @@ class ARView extends StatelessWidget {
       );
     } else if (Platform.isAndroid) {
       return Scaffold(
-        body: AndroidView(
-          viewType: 'ARView',
-          onPlatformViewCreated: (id) => _onPlatformViewCreated(context, id),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: _launchAndroidActivity,
+            child: const Text('Abrir Realidade Aumentada'),
+          ),
         ),
       );
     } else {
@@ -41,6 +42,7 @@ class ARView extends StatelessWidget {
   }
 
   Future<void> _handleGoBack(context) async {
+    print("Go back");
     Navigator.of(context).pop();
   }
 
@@ -75,10 +77,17 @@ class ARView extends StatelessWidget {
 
     onNavigateToArticle(context, article);
   }
+
+  void _launchAndroidActivity() {
+    print("Launching Android Activity...");
+    _methodChannel.invokeMethod('launchAndroidActivity');
+  }
+
   Future<Map<String, dynamic>> getStainedGlass(arguments) async {
     try {
       final stainedGlass = await Api.fetchStainedGlass(arguments);
       if (stainedGlass != null) {
+        print ("Stained glass found: $stainedGlass");
         return stainedGlass.toJson();
       } else {
         print("Stained glass not found.");
@@ -90,12 +99,17 @@ class ARView extends StatelessWidget {
     }
   }
 
+  Future<void> onARViewOpened (dynamic arguments) async {
+    print("AR View Opened with arguments: $arguments");
+  }
+
   void _onPlatformViewCreated(BuildContext context, int id) {
     _methodChannel.setMethodCallHandler((call) async {
       final methodHandlers = {
         'goBack': () => _handleGoBack(context),
         'getStainedGlassInfo': () => _handleGetStainedGlassInfo(call.arguments),
         'goToArticle': () => _handleNavigateToArticle(context, call.arguments),
+        'onARViewOpened': () => onARViewOpened(call.arguments),
       };
 
       final handler = methodHandlers[call.method];
