@@ -92,13 +92,13 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
   // Rendering. The Renderers are created here, and initialized when the GL surface is created.
   private GLSurfaceView surfaceView;
-  private ImageView fitToScanView;
   private ImageButton goBackButton;
   private ConstraintLayout funfactButton;
   private ConstraintLayout productionButton;
   private ConstraintLayout creditsButton;
   private ConstraintLayout meaningButton;
   private RequestManager glideRequestManager;
+  private ImageView arPlaceholderView;
 
   private boolean installRequested;
 
@@ -141,12 +141,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
 
     // MARK: - Init UI Elements
-
-    fitToScanView = findViewById(R.id.image_view_fit_to_scan);
-    glideRequestManager = Glide.with(this);
-    glideRequestManager
-        .load(Uri.parse("file:///android_asset/fit_to_scan.png"))
-        .into(fitToScanView);
+    arPlaceholderView = findViewById(R.id.ar_placeholder);
 
     goBackButton = findViewById(R.id.goBackButton);
     goBackButton.setOnClickListener(new View.OnClickListener() {
@@ -289,7 +284,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     surfaceView.onResume();
     displayRotationHelper.onResume();
 
-    fitToScanView.setVisibility(View.VISIBLE);
+    arPlaceholderView.setVisibility(View.VISIBLE);
   }
 
   @Override
@@ -423,7 +418,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
               new Runnable() {
                 @Override
                 public void run() {
-                  fitToScanView.setVisibility(View.GONE);
+                  arPlaceholderView.setVisibility(View.GONE);
                 }
               });
             

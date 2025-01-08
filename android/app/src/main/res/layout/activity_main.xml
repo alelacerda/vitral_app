@@ -11,18 +11,24 @@
       android:layout_height="fill_parent"
       android:layout_gravity="top" />
 
-  <ImageView
-      android:id="@+id/image_view_fit_to_scan"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_gravity="center"
-      android:scaleType="fitCenter" />
-
-  <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-    <ImageButton
+      <ImageView
+          android:id="@+id/ar_placeholder"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="145dp"
+          android:layout_marginEnd="145dp"
+          android:layout_marginBottom="45dp"
+          android:src="@drawable/ar_palceholder"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="1.0"
+          app:layout_constraintStart_toStartOf="parent" />
+
+      <ImageButton
         android:id="@+id/goBackButton"
         style="@android:style/Widget.DeviceDefault.Light.ImageButton"
         android:layout_width="wrap_content"
