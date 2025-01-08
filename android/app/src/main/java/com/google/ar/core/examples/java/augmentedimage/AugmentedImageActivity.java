@@ -26,6 +26,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
@@ -58,8 +59,22 @@ import java.util.Map;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import com.example.vitral_app.R;
-
-
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import java.util.ArrayList;
+import java.util.List;
+import com.example.vitral_app.StainedGlass;
+import com.example.vitral_app.StainedGlassInfo;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.android.gms.tasks.OnCompleteListener;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.example.vitral_app.MyCallback;
 /**
  * This app extends the HelloAR Java app to include image tracking functionality.
  *
@@ -70,12 +85,13 @@ import com.example.vitral_app.R;
  * href="https://developers.google.com/ar/develop/java/augmented-images/">Recognize and Augment
  * Images</a>.
  */
-public class AugmentedImageActivity extends FlutterActivity implements GLSurfaceView.Renderer {
+public class AugmentedImageActivity extends AppCompatActivity implements GLSurfaceView.Renderer {
   private static final String TAG = AugmentedImageActivity.class.getSimpleName();
 
   // Rendering. The Renderers are created here, and initialized when the GL surface is created.
   private GLSurfaceView surfaceView;
   private ImageView fitToScanView;
+  private ImageButton goBackButton;
   private RequestManager glideRequestManager;
 
   private boolean installRequested;
@@ -88,6 +104,8 @@ public class AugmentedImageActivity extends FlutterActivity implements GLSurface
   private final BackgroundRenderer backgroundRenderer = new BackgroundRenderer();
   private final AugmentedImageRenderer augmentedImageRenderer = new AugmentedImageRenderer();
 
+  private final List <StainedGlassInfo> stainedGlassInfos = new ArrayList<>();
+
   private boolean shouldConfigureSession = false;
 
   // Augmented image configuration and rendering.
@@ -97,16 +115,6 @@ public class AugmentedImageActivity extends FlutterActivity implements GLSurface
   // the
   // database.
   private final Map<Integer, Pair<AugmentedImage, Anchor>> augmentedImageMap = new HashMap<>();
-
-
-  // @Override
-  // public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
-  //   GeneratedPluginRegistrant.registerWith(flutterEngine);
-
-  //   methodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL);
-    
-  //   methodChannel.invokeMethod("onARViewOpened", null);
-  // }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +136,15 @@ public class AugmentedImageActivity extends FlutterActivity implements GLSurface
     glideRequestManager
         .load(Uri.parse("file:///android_asset/fit_to_scan.png"))
         .into(fitToScanView);
+
+    goBackButton = findViewById(R.id.goBackButton);
+    goBackButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        finish();
+      }
+      
+    });
 
     installRequested = false;
   }
@@ -347,9 +364,13 @@ public class AugmentedImageActivity extends FlutterActivity implements GLSurface
                   fitToScanView.setVisibility(View.GONE);
                 }
               });
+            
+          
 
           String imageName = augmentedImage.getName();
-          imageName = imageName.replaceAll(".jpg", "");
+          Log.d("AugmentedImageActivity", "Image Name: " + imageName);
+
+          getAPIObjects();
 
           text = String.format("Detected Image %s", imageName);
           messageSnackbarHelper.showMessage(this, text);
@@ -403,7 +424,7 @@ public class AugmentedImageActivity extends FlutterActivity implements GLSurface
       }
 
       augmentedImageDatabase = new AugmentedImageDatabase(session);
-      augmentedImageDatabase.addImage("image_name", augmentedImageBitmap);
+      augmentedImageDatabase.addImage("pib_paes_peixes", augmentedImageBitmap);
       // If the physical size of the image is known, you can instead use:
       //     augmentedImageDatabase.addImage("image_name", augmentedImageBitmap, widthInMeters);
       // This will improve the initial detection speed. ARCore will still actively estimate the
@@ -430,5 +451,103 @@ public class AugmentedImageActivity extends FlutterActivity implements GLSurface
       Log.e(TAG, "IO exception loading augmented image bitmap.", e);
     }
     return null;
+  }
+
+  public static void fetchStainedGlass(String id, MyCallback<StainedGlass> listener) {
+    DocumentReference stainedGlassRef = FirebaseFirestore.getInstance()
+            .collection("stained-glasses")
+            .document(id);
+
+      stainedGlassRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        @Override
+        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+          if (task.isSuccessful()) {
+            DocumentSnapshot snapshot = task.getResult();
+            if (snapshot != null && snapshot.exists()) {
+              StainedGlass stainedGlass = StainedGlass.fromMap(snapshot.getData());
+              Log.d("StainedGlassAPI", "API Fetched StainedGlass: " + stainedGlass);
+              listener.onSuccess(stainedGlass);
+              // listener.onSuccess(stainedGlass);
+            } else {
+              Log.d("StainedGlassAPI", "API Document does not exist or contains no data.");
+              // listener.onSuccess(null);
+            }
+          } else {
+            Log.e("StainedGlassAPI", "API Failed to fetch stained glass: ", task.getException());
+            // listener.onSuccess(null);
+          }
+        }});
+  }
+
+  public static void fetchStainedGlassesInfo(List<String> ids, MyCallback<List<StainedGlassInfo>> listener) {
+    if (ids.isEmpty()) {
+        Log.e("StainedGlassAPI", "Error: IDs list is empty");
+        listener.onSuccess(new ArrayList<>());
+        return;
+    }
+
+    CollectionReference stainedGlassesRef = FirebaseFirestore.getInstance().collection("stained-glass-info");
+
+    stainedGlassesRef.whereIn(FieldPath.documentId(), ids)
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+              @Override
+              public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                  List<StainedGlassInfo> stainedGlassesList = new ArrayList<>();
+                  for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                    try {
+                      stainedGlassesList.add(StainedGlassInfo.fromMap(doc.getData()));
+                    } catch (Exception e) {
+                      Log.e("StainedGlassAPI", "Error parsing document: ", e);
+                    }
+                  }
+                  listener.onSuccess(stainedGlassesList);
+                } else {
+                  Log.e("StainedGlassAPI", "Failed to fetch stained glasses info: ", task.getException());
+                  listener.onSuccess(new ArrayList<>());
+                }
+              }
+            });
+  }
+
+  public void getAPIObjects() {
+    if (!stainedGlassInfos.isEmpty()) {
+      return;
+    }
+
+    Log.d("API", "API Fetching StainedGlass");
+    fetchStainedGlass("pib_paes_peixes", new MyCallback<StainedGlass>(){ 
+        @Override
+        public void onSuccess(StainedGlass stainedGlass) {
+          if (stainedGlass != null) {
+              Log.d("MainActivity", "API Fetched StainedGlass 2: " + stainedGlass.getTitle());
+              List<String> ids = stainedGlass.getInformationIds();
+              fetchStainedGlassesInfo(ids, new MyCallback<List<StainedGlassInfo>>(){
+                  @Override
+                  public void onSuccess(List<StainedGlassInfo> stainedGlassesList) {
+                      for (StainedGlassInfo info : stainedGlassesList) {
+                          Log.d("MainActivity", "API Fetched StainedGlassInfo 2: " + info.getTitle() + " " + info.getCategory());
+                      }
+
+                      stainedGlassInfos.addAll(stainedGlassesList);
+                  }
+
+                  @Override
+                  public void onFailure(@Nullable String error) {
+                      Log.d("MainActivity", "API onFailure 2: " + error);
+                  }
+              });
+
+          } else {
+              Log.d("MainActivity", "API No document found.");
+          }
+        }
+
+        @Override
+        public void onFailure(@Nullable String error) {
+          Log.d("MainActivity", "API onFailure: " + error);
+        }
+      });
   }
 }

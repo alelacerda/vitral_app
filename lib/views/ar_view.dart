@@ -28,6 +28,12 @@ class ARView extends StatelessWidget {
             child: const Text('Abrir Realidade Aumentada'),
           ),
         ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _handleGoBack(context);
+        },
+        child: const Icon(Icons.add),
+      ),
       );
     } else {
       return Scaffold(
