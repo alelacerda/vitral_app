@@ -5,19 +5,18 @@
     android:layout_height="match_parent"
     tools:context="com.google.ar.core.apps.augmentedimage.AugmentedImageActivity">
 
-  <android.opengl.GLSurfaceView
+    <android.opengl.GLSurfaceView
       android:id="@+id/surfaceview"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:layout_gravity="top"/>
+      android:layout_gravity="top" />
 
   <ImageView
       android:id="@+id/image_view_fit_to_scan"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_gravity="center"
-      android:scaleType="fitCenter"
-      />
+      android:scaleType="fitCenter" />
 
   <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
@@ -25,15 +24,203 @@
 
     <ImageButton
         android:id="@+id/goBackButton"
+        style="@android:style/Widget.DeviceDefault.Light.ImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="287dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="12dp"
+        android:background="@null"
+        android:scaleType="center"
         android:src="@drawable/menu_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="88dp"
+          android:background="#FFFFFF"
+          android:orientation="horizontal"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent">
+
+          <HorizontalScrollView
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:scrollbarAlwaysDrawHorizontalTrack="false"
+              android:scrollbarAlwaysDrawVerticalTrack="false"
+              android:scrollbarThumbHorizontal="@null"
+              android:scrollbarThumbVertical="@null">
+
+              <LinearLayout
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:orientation="horizontal">
+
+                  <!-- Fun Facts Button Group -->
+                  <androidx.constraintlayout.widget.ConstraintLayout
+                      android:id="@+id/funfact_button"
+                      android:layout_width="wrap_content"
+                      android:layout_height="match_parent">
+
+                      <TextView
+                          android:id="@+id/funfact_text"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_gravity="center"
+                          android:layout_marginStart="24dp"
+                          android:layout_marginTop="32dp"
+                          android:layout_marginEnd="16dp"
+                          android:fontFamily="@font/fira_sans"
+                          android:gravity="center"
+                          android:text="CURIOSIDADES"
+                          android:textColor="#000000"
+                          android:textSize="18sp"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent" />
+
+                      <View
+                          android:id="@+id/funfact_underline"
+                          android:layout_width="0dp"
+                          android:layout_height="4dp"
+                          android:layout_gravity="bottom"
+                          android:layout_marginStart="24dp"
+                          android:layout_marginEnd="16dp"
+                          android:layout_marginBottom="30dp"
+                          android:background="@drawable/rounded_rectangle"
+                          android:backgroundTint="#E04723"
+                          android:backgroundTintMode="multiply"
+                          app:layout_constraintBottom_toBottomOf="parent"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent" />
+                  </androidx.constraintlayout.widget.ConstraintLayout>
+
+                  <androidx.constraintlayout.widget.ConstraintLayout
+                      android:id="@+id/production_button"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent">
+
+                      <TextView
+                          android:id="@+id/production_text"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_gravity="center"
+                          android:layout_marginStart="16dp"
+                          android:layout_marginTop="32dp"
+                          android:layout_marginEnd="16dp"
+                          android:fontFamily="@font/fira_sans"
+                          android:gravity="center"
+                          android:text="PRODUÇÃO"
+                          android:textColor="#000000"
+                          android:textSize="18sp"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent" />
+
+                      <View
+                          android:id="@+id/production_underline"
+                          android:layout_width="0dp"
+                          android:layout_height="4dp"
+                          android:layout_gravity="bottom"
+                          android:layout_marginStart="16dp"
+                          android:layout_marginEnd="16dp"
+                          android:layout_marginBottom="30dp"
+                          android:background="@drawable/rounded_rectangle"
+                          android:backgroundTint="#480F5D"
+                          android:backgroundTintMode="multiply"
+                          app:layout_constraintBottom_toBottomOf="parent"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent" />
+                  </androidx.constraintlayout.widget.ConstraintLayout>
+
+                  <androidx.constraintlayout.widget.ConstraintLayout
+                      android:id="@+id/credits_button"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent">
+
+                      <TextView
+                          android:id="@+id/credits_text"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_gravity="center"
+                          android:layout_marginStart="16dp"
+                          android:layout_marginTop="32dp"
+                          android:layout_marginEnd="16dp"
+                          android:fontFamily="@font/fira_sans"
+                          android:gravity="center"
+                          android:text="CRÉDITOS"
+                          android:textColor="#000000"
+                          android:textSize="18sp"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent" />
+
+                      <View
+                          android:id="@+id/credits_underline"
+                          android:layout_width="0dp"
+                          android:layout_height="4dp"
+                          android:layout_gravity="bottom"
+                          android:layout_marginStart="16dp"
+                          android:layout_marginEnd="16dp"
+                          android:layout_marginBottom="30dp"
+                          android:background="@drawable/rounded_rectangle"
+                          android:backgroundTint="#F89412"
+                          android:backgroundTintMode="multiply"
+                          app:layout_constraintBottom_toBottomOf="parent"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent" />
+                  </androidx.constraintlayout.widget.ConstraintLayout>
+
+                  <androidx.constraintlayout.widget.ConstraintLayout
+                      android:id="@+id/meaning_button"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent">
+
+                      <TextView
+                          android:id="@+id/meaning_text"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_gravity="center"
+                          android:layout_marginStart="16dp"
+                          android:layout_marginTop="32dp"
+                          android:layout_marginEnd="24dp"
+                          android:fontFamily="@font/fira_sans"
+                          android:gravity="center"
+                          android:text="SIGNIFICADOS"
+                          android:textColor="#000000"
+                          android:textSize="18sp"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent" />
+
+                      <View
+                          android:id="@+id/meaning_underline"
+                          android:layout_width="0dp"
+                          android:layout_height="4dp"
+                          android:layout_gravity="bottom"
+                          android:layout_marginStart="16dp"
+                          android:layout_marginEnd="24dp"
+                          android:layout_marginBottom="30dp"
+                          android:background="@drawable/rounded_rectangle"
+                          android:backgroundTint="#9963AD"
+                          android:backgroundTintMode="multiply"
+                          app:layout_constraintBottom_toBottomOf="parent"
+                          app:layout_constraintEnd_toEndOf="parent"
+                          app:layout_constraintStart_toStartOf="parent" />
+                  </androidx.constraintlayout.widget.ConstraintLayout>
+
+                  <!-- Production Button Group -->
+
+                  <!-- Repeat for other buttons -->
+                  <!-- Credits Button Group -->
+
+              </LinearLayout>
+          </HorizontalScrollView>
+      </LinearLayout>
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

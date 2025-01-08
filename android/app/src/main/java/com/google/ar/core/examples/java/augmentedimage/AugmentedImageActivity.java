@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -75,6 +76,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.vitral_app.MyCallback;
+
 /**
  * This app extends the HelloAR Java app to include image tracking functionality.
  *
@@ -92,6 +94,10 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
   private GLSurfaceView surfaceView;
   private ImageView fitToScanView;
   private ImageButton goBackButton;
+  private ConstraintLayout funfactButton;
+  private ConstraintLayout productionButton;
+  private ConstraintLayout creditsButton;
+  private ConstraintLayout meaningButton;
   private RequestManager glideRequestManager;
 
   private boolean installRequested;
@@ -105,6 +111,8 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
   private final AugmentedImageRenderer augmentedImageRenderer = new AugmentedImageRenderer();
 
   private final List <StainedGlassInfo> stainedGlassInfos = new ArrayList<>();
+  private final List <StainedGlassInfo> filteredStainedGlassInfos = new ArrayList<>();
+  private String selectedCategory = "";
 
   private boolean shouldConfigureSession = false;
 
@@ -131,6 +139,9 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     surfaceView.setWillNotDraw(false);
 
+
+    // MARK: - Init UI Elements
+
     fitToScanView = findViewById(R.id.image_view_fit_to_scan);
     glideRequestManager = Glide.with(this);
     glideRequestManager
@@ -143,10 +154,61 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
       public void onClick(View v) {
         finish();
       }
-      
     });
 
+    funfactButton = findViewById(R.id.funfact_button);
+    funfactButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        onCategorySelected(v);
+      }
+    });
+    productionButton = findViewById(R.id.production_button);
+    productionButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        onCategorySelected(v);
+      }
+    });
+    creditsButton = findViewById(R.id.credits_button);
+    creditsButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        onCategorySelected(v);
+      }
+    });
+    meaningButton = findViewById(R.id.meaning_button);
+    meaningButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        onCategorySelected(v);
+      }
+    });
+
+    unselectCategoryButtons();
+
     installRequested = false;
+  }
+
+  public void onCategorySelected(View view) {
+    selectedCategory = getResources().getResourceEntryName(view.getId()).replace("_button", "");
+
+    Log.d("StainedGlassUI", "UI Category Selected: " + selectedCategory);
+
+    unselectCategoryButtons();
+
+    int resId = getResources().getIdentifier(selectedCategory + "_underline", "id", getPackageName());
+
+    findViewById(resId).setVisibility(View.VISIBLE);
+
+    filterStainedGlassInfosBy(selectedCategory);
+  }
+
+  public void unselectCategoryButtons() {
+    findViewById(R.id.funfact_underline).setVisibility(View.INVISIBLE);
+    findViewById(R.id.production_underline).setVisibility(View.INVISIBLE);
+    findViewById(R.id.credits_underline).setVisibility(View.INVISIBLE);
+    findViewById(R.id.meaning_underline).setVisibility(View.INVISIBLE);
   }
 
   @Override
@@ -509,6 +571,18 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
                 }
               }
             });
+  }
+
+  public void filterStainedGlassInfosBy(String category) {
+    for (StainedGlassInfo info : stainedGlassInfos) {
+      if (info.getCategory().equals(category)) {
+        filteredStainedGlassInfos.add(info);
+      }
+    }
+
+    for (StainedGlassInfo info : filteredStainedGlassInfos) {
+      Log.d("StainedGlassAPI", "API Filtered StainedGlassInfo: " + info.getTitle() + " " + info.getCategory());
+    }
   }
 
   public void getAPIObjects() {
