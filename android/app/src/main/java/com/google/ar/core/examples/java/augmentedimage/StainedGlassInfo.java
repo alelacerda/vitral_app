@@ -32,6 +32,47 @@ public class StainedGlassInfo {
     public String getCategory() {
         return category;
     }
+    
+    public String getCategoryText() {
+        switch (category) {
+            case "funfact":
+                return "Curiosidades";
+            case "production":
+                return "Produção";
+            case "credits":
+                return "Créditos";
+            case "meaning":
+                return "Significado";
+            default:
+                return "";
+        }
+    }
+
+    public String getCategoryColor() {
+        switch (category) {
+            case "funfact":
+                return "#E04723";
+            case "production":
+                return "#480F5D";
+            case "credits":
+                return "#F89412";
+            case "meaning":
+                return "#9963AD";
+            default:
+                return "";
+        }
+    }
+
+    public String getTextColorForCategory() {
+        switch (category) {
+            case "funfact":
+                return "#FEFEFE";
+            case "production":
+                return "#FEFEFE";
+            default:
+                return "#010A10";
+        }
+    }
 
     public List<Double> getPosition() {
         return position;

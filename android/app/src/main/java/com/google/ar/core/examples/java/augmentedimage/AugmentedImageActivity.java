@@ -27,8 +27,10 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -76,6 +78,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.vitral_app.MyCallback;
+import android.graphics.Color;
+import android.util.TypedValue;
+import android.content.Context;
 
 /**
  * This app extends the HelloAR Java app to include image tracking functionality.
@@ -99,6 +104,11 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
   private ConstraintLayout meaningButton;
   private RequestManager glideRequestManager;
   private ImageView arPlaceholderView;
+  private LinearLayout infoCardView;
+  private TextView infoCardCategoryView;
+  private TextView infoCardTitleView;
+  private TextView infoCardDescriptionView;
+  private ImageView infoCardImageView;
 
   private boolean installRequested;
 
@@ -111,8 +121,10 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
   private final AugmentedImageRenderer augmentedImageRenderer = new AugmentedImageRenderer();
 
   private final List <StainedGlassInfo> stainedGlassInfos = new ArrayList<>();
+  private boolean madeApiCall = false;
   private final List <StainedGlassInfo> filteredStainedGlassInfos = new ArrayList<>();
   private String selectedCategory = "";
+  private int selectedInfoIndex = -1;
 
   private boolean shouldConfigureSession = false;
 
@@ -147,7 +159,8 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     goBackButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        finish();
+        onInfoSelected();
+        // finish();
       }
     });
 
@@ -182,11 +195,22 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
 
     unselectCategoryButtons();
 
+    infoCardView = findViewById(R.id.info_card);
+    infoCardCategoryView = findViewById(R.id.info_card_category);
+    infoCardTitleView = findViewById(R.id.info_card_title);
+    infoCardDescriptionView = findViewById(R.id.info_card_description);
+    infoCardImageView = findViewById(R.id.info_card_image);
+
+    infoCardView.setVisibility(View.INVISIBLE);
+
     installRequested = false;
   }
 
   public void onCategorySelected(View view) {
     selectedCategory = getResources().getResourceEntryName(view.getId()).replace("_button", "");
+
+    selectedInfoIndex = -1;
+    infoCardView.setVisibility(View.INVISIBLE);
 
     Log.d("StainedGlassUI", "UI Category Selected: " + selectedCategory);
 
@@ -204,6 +228,39 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
     findViewById(R.id.production_underline).setVisibility(View.INVISIBLE);
     findViewById(R.id.credits_underline).setVisibility(View.INVISIBLE);
     findViewById(R.id.meaning_underline).setVisibility(View.INVISIBLE);
+  }
+
+  public void onInfoSelected() {
+    if (selectedCategory == "" || filteredStainedGlassInfos.isEmpty()) {
+      return;
+    } 
+
+    if (selectedInfoIndex == -1) {
+      selectedInfoIndex = 0;
+    } else { 
+      int count = filteredStainedGlassInfos.size();
+      Log.d("StainedGlassUI", "Count: " + count);
+      selectedInfoIndex = (selectedInfoIndex + 1) % count;
+    }
+
+    infoCardView.setVisibility(View.VISIBLE);
+    StainedGlassInfo info = filteredStainedGlassInfos.get(selectedInfoIndex);
+    infoCardCategoryView.setText(info.getCategoryText());
+    infoCardCategoryView.setBackgroundColor(Color.parseColor(info.getCategoryColor()));
+    infoCardCategoryView.setTextColor(Color.parseColor(info.getTextColorForCategory()));
+    infoCardTitleView.setText(info.getTitle());
+    infoCardDescriptionView.setText(info.getDescription());
+
+    if (info.getImageUrl() != null) {
+
+      int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
+      infoCardImageView.setLayoutParams(new LinearLayout.LayoutParams(size, size));
+      glideRequestManager = Glide.with(this);
+      glideRequestManager.load(info.getImageUrl()).into(infoCardImageView);
+    } else {
+      infoCardImageView.setLayoutParams(new LinearLayout.LayoutParams(0,0));
+      infoCardImageView.setImageDrawable(null);
+    }
   }
 
   @Override
@@ -569,6 +626,7 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
   }
 
   public void filterStainedGlassInfosBy(String category) {
+    filteredStainedGlassInfos.clear();
     for (StainedGlassInfo info : stainedGlassInfos) {
       if (info.getCategory().equals(category)) {
         filteredStainedGlassInfos.add(info);
@@ -581,9 +639,15 @@ public class AugmentedImageActivity extends AppCompatActivity implements GLSurfa
   }
 
   public void getAPIObjects() {
-    if (!stainedGlassInfos.isEmpty()) {
+    // if (!stainedGlassInfos.isEmpty()) {
+    //   return;
+    // }
+
+    if (madeApiCall) {
       return;
     }
+
+    madeApiCall = true;
 
     Log.d("API", "API Fetching StainedGlass");
     fetchStainedGlass("pib_paes_peixes", new MyCallback<StainedGlass>(){ 
