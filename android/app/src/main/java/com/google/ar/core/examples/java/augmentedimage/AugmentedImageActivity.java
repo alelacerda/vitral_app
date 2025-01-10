@@ -16,8 +16,10 @@
 
  package com.google.ar.core.examples.java.augmentedimage;
 
-
+ import android.graphics.drawable.Drawable;
+ import androidx.core.graphics.drawable.DrawableCompat;
  import android.content.Context;
+ import android.content.res.ColorStateList;
  import android.graphics.Bitmap;
  import android.graphics.BitmapFactory;
  import android.graphics.Color;
@@ -94,6 +96,7 @@
  import java.util.Map;
  import javax.microedition.khronos.egl.EGLConfig;
  import javax.microedition.khronos.opengles.GL10;
+
  /**
   * This app extends the HelloAR Java app to include image tracking functionality.
   *
@@ -567,7 +570,7 @@
            float dx = translation[0] / (augmentedImage.getExtentX()/2.0f) - x;
            float dz = translation[2] / (augmentedImage.getExtentZ()/2.0f) - z;
            float distance = (float) Math.sqrt(dx * dx + dz * dz);
-           if (distance < 0.1f) {
+           if (distance < 0.2f) {
              Log.d(TAG, "Tapped on info: " + info.getTitle());
              selectedInfoIndex = i;
              onInfoSelected();
@@ -801,9 +804,13 @@
       new Runnable() {
         @Override
         public void run() {
+          Drawable drawable = infoCardCategoryView.getBackground();
+          drawable = DrawableCompat.wrap(drawable);
+          DrawableCompat.setTint(drawable, Color.parseColor(info.getCategoryColor()));
+          infoCardCategoryView.setBackground(drawable);
+
           infoCardView.setVisibility(View.VISIBLE);
           infoCardCategoryView.setText(info.getCategoryText());
-          infoCardCategoryView.setBackgroundColor(Color.parseColor(info.getCategoryColor()));
           infoCardCategoryView.setTextColor(Color.parseColor(info.getTextColorForCategory()));
           infoCardTitleView.setText(info.getTitle());
           infoCardDescriptionView.setText(info.getDescription());
