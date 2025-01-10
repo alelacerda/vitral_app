@@ -1,20 +1,13 @@
-/*
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.google.ar.core.examples.java.augmentedimage.rendering;
 
+import android.opengl.GLES20;
+import android.opengl.Matrix;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+import com.google.ar.core.Frame;
+import android.util.Log;
 import android.content.Context;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
@@ -22,6 +15,8 @@ import com.google.ar.core.Pose;
 import com.google.ar.core.examples.java.common.rendering.ObjectRenderer;
 import com.google.ar.core.examples.java.common.rendering.ObjectRenderer.BlendMode;
 import java.io.IOException;
+import java.util.HashMap;
+import com.google.ar.core.Session;
 
 /** Renders an augmented image. */
 public class AugmentedImageRenderer {
@@ -34,95 +29,140 @@ public class AugmentedImageRenderer {
     0x009688, 0x4CAF50, 0x8BC34A, 0xCDDC39, 0xFFEB3B, 0xFFC107, 0xFF9800,
   };
 
-  private final ObjectRenderer imageFrameUpperLeft = new ObjectRenderer();
-  private final ObjectRenderer imageFrameUpperRight = new ObjectRenderer();
-  private final ObjectRenderer imageFrameLowerLeft = new ObjectRenderer();
-  private final ObjectRenderer imageFrameLowerRight = new ObjectRenderer();
+  public final HashMap<String, Anchor> anchorMap = new HashMap<>();
 
-  public AugmentedImageRenderer() {}
+  private FloatBuffer vertexBuffer;
+  private ShortBuffer indexBuffer;
 
-  public void createOnGlThread(Context context) throws IOException {
+  // Definição dos vértices e índices para o quadrado
+  private static final float[] VERTICES = {
+          -0.01f,  0.0f, -0.01f,  // Inferior esquerdo
+           0.01f,  0.0f, -0.01f,  // Inferior direito
+           0.01f,  0.0f, 0.01f,  // Superior direito
+          -0.01f,  0.0f, 0.01f   // Superior esquerdo
+  };
 
-    imageFrameUpperLeft.createOnGlThread(
-        context, "models/frame_upper_left.obj", "models/frame_base.png");
-    imageFrameUpperLeft.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
-    imageFrameUpperLeft.setBlendMode(BlendMode.AlphaBlending);
+  private static final short[] INDICES = { 0, 1, 2, 0, 2, 3 };
 
-    imageFrameUpperRight.createOnGlThread(
-        context, "models/frame_upper_right.obj", "models/frame_base.png");
-    imageFrameUpperRight.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
-    imageFrameUpperRight.setBlendMode(BlendMode.AlphaBlending);
 
-    imageFrameLowerLeft.createOnGlThread(
-        context, "models/frame_lower_left.obj", "models/frame_base.png");
-    imageFrameLowerLeft.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
-    imageFrameLowerLeft.setBlendMode(BlendMode.AlphaBlending);
+  // Shaders como strings
+  private static final String VERTEX_SHADER_CODE =
+      "uniform mat4 uModelViewProjectionMatrix;\n" +
+      "attribute vec4 aPosition;\n" +
+      "\n" +
+      "void main() {\n" +
+      "    gl_Position = uModelViewProjectionMatrix * aPosition;\n" +
+      "}\n";
 
-    imageFrameLowerRight.createOnGlThread(
-        context, "models/frame_lower_right.obj", "models/frame_base.png");
-    imageFrameLowerRight.setMaterialProperties(0.0f, 3.5f, 1.0f, 6.0f);
-    imageFrameLowerRight.setBlendMode(BlendMode.AlphaBlending);
+  private static final String FRAGMENT_SHADER_CODE =
+      "precision mediump float;\n" +
+      "uniform vec4 uColor;\n" +
+      "\n" +
+      "void main() {\n" +
+      "    gl_FragColor = uColor;\n" +
+      "}\n";
+
+  private int program;
+
+  public AugmentedImageRenderer() {
+      // Carregar buffers
+      vertexBuffer = ByteBuffer.allocateDirect(VERTICES.length * 4)
+          .order(ByteOrder.nativeOrder())
+          .asFloatBuffer();
+      vertexBuffer.put(VERTICES).position(0);
+
+      indexBuffer = ByteBuffer.allocateDirect(INDICES.length * 2)
+          .order(ByteOrder.nativeOrder())
+          .asShortBuffer();
+      indexBuffer.put(INDICES).position(0);
+
   }
 
-  public void draw(
-      float[] viewMatrix,
-      float[] projectionMatrix,
-      AugmentedImage augmentedImage,
-      Anchor centerAnchor,
-      float[] colorCorrectionRgba) {
-    float[] tintColor =
-        convertHexToColor(TINT_COLORS_HEX[augmentedImage.getIndex() % TINT_COLORS_HEX.length]);
+  public void initialize() {
+    // Compilar os shaders
+    int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
+    GLES20.glShaderSource(vertexShader, VERTEX_SHADER_CODE);
+    GLES20.glCompileShader(vertexShader);
+    checkShaderCompile(vertexShader);
 
-    Pose[] localBoundaryPoses = {
-      Pose.makeTranslation(
-          -0.5f * augmentedImage.getExtentX(),
-          0.0f,
-          -0.5f * augmentedImage.getExtentZ()), // upper left
-      Pose.makeTranslation(
-          0.5f * augmentedImage.getExtentX(),
-          0.0f,
-          -0.5f * augmentedImage.getExtentZ()), // upper right
-      Pose.makeTranslation(
-          0.5f * augmentedImage.getExtentX(),
-          0.0f,
-          0.5f * augmentedImage.getExtentZ()), // lower right
-      Pose.makeTranslation(
-          -0.5f * augmentedImage.getExtentX(),
-          0.0f,
-          0.5f * augmentedImage.getExtentZ()) // lower left
-    };
+    int fragmentShader = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
+    GLES20.glShaderSource(fragmentShader, FRAGMENT_SHADER_CODE);
+    GLES20.glCompileShader(fragmentShader);
+    checkShaderCompile(fragmentShader);
 
+    // Criar o programa OpenGL
+    program = GLES20.glCreateProgram();
+    GLES20.glAttachShader(program, vertexShader);
+    GLES20.glAttachShader(program, fragmentShader);
+    GLES20.glLinkProgram(program);
+    checkProgramLink(program);
+
+    Log.d("AugmentedImageActivity", "Program: " + program);
+  }
+
+  public void drawMarker(String id, float x, float z, AugmentedImage augmentedImage, Frame frame, Anchor centerAnchor, float[] viewMatrix, float[] projectionMatrix) {
+
+    Pose localBoundaryPose = Pose.makeTranslation(
+      x * (augmentedImage.getExtentX()/2.0f),
+      0.0f,
+      z * (augmentedImage.getExtentZ()/2.0f));
+    
     Pose anchorPose = centerAnchor.getPose();
-    Pose[] worldBoundaryPoses = new Pose[4];
-    for (int i = 0; i < 4; ++i) {
-      worldBoundaryPoses[i] = anchorPose.compose(localBoundaryPoses[i]);
+    Pose worldBoundaryPose = anchorPose.compose(localBoundaryPose);
+    
+    float[] modelMatrix = new float[16];
+    worldBoundaryPose.toMatrix(modelMatrix,0);
+
+    if (!anchorMap.containsKey(id)) {
+      Anchor boundaryAnchor = augmentedImage.createAnchor(worldBoundaryPose);
+      anchorMap.put(id, boundaryAnchor);
     }
 
-    float scaleFactor = 1.0f;
-    float[] modelMatrix = new float[16];
+    // Multiplicar as matrizes para obter o modelo de projeção final
+    float[] modelViewProjectionMatrix = new float[16];
+    Matrix.multiplyMM(modelViewProjectionMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+    Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewProjectionMatrix, 0);
 
-    worldBoundaryPoses[0].toMatrix(modelMatrix, 0);
-    imageFrameUpperLeft.updateModelMatrix(modelMatrix, scaleFactor);
-    imageFrameUpperLeft.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, tintColor);
+    // Usar o programa OpenGL
+    GLES20.glUseProgram(program);
 
-    worldBoundaryPoses[1].toMatrix(modelMatrix, 0);
-    imageFrameUpperRight.updateModelMatrix(modelMatrix, scaleFactor);
-    imageFrameUpperRight.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, tintColor);
+    // Passar a matriz de modelo e projeção
+    int mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uModelViewProjectionMatrix");
+    GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, modelViewProjectionMatrix, 0);
 
-    worldBoundaryPoses[2].toMatrix(modelMatrix, 0);
-    imageFrameLowerRight.updateModelMatrix(modelMatrix, scaleFactor);
-    imageFrameLowerRight.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, tintColor);
+    // Passar os vértices
+    int positionHandle = GLES20.glGetAttribLocation(program, "aPosition");
+    GLES20.glEnableVertexAttribArray(positionHandle);
+    GLES20.glVertexAttribPointer(positionHandle, 3, GLES20.GL_FLOAT, false, 0, vertexBuffer);
 
-    worldBoundaryPoses[3].toMatrix(modelMatrix, 0);
-    imageFrameLowerLeft.updateModelMatrix(modelMatrix, scaleFactor);
-    imageFrameLowerLeft.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, tintColor);
+    // Passar a cor (vermelho)
+    int colorHandle = GLES20.glGetUniformLocation(program, "uColor");
+    GLES20.glUniform4f(colorHandle, 1.0f, 0.0f, 0.0f, 1.0f);  // Cor vermelha
+
+    // Desenhar o quadrado (dois triângulos)
+    GLES20.glDrawElements(GLES20.GL_TRIANGLES, INDICES.length, GLES20.GL_UNSIGNED_SHORT, indexBuffer);
+
+    // Desabilitar o atributo após o desenho
+    GLES20.glDisableVertexAttribArray(positionHandle);
   }
 
-  private static float[] convertHexToColor(int colorHex) {
-    // colorHex is in 0xRRGGBB format
-    float red = ((colorHex & 0xFF0000) >> 16) / 255.0f * TINT_INTENSITY;
-    float green = ((colorHex & 0x00FF00) >> 8) / 255.0f * TINT_INTENSITY;
-    float blue = (colorHex & 0x0000FF) / 255.0f * TINT_INTENSITY;
-    return new float[] {red, green, blue, TINT_ALPHA};
+  // Função para verificar se o shader foi compilado corretamente
+  private static void checkShaderCompile(int shader) {
+      int[] compileStatus = new int[1];
+      GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
+      if (compileStatus[0] == 0) {
+          Log.e("ShaderError", GLES20.glGetShaderInfoLog(shader));
+          GLES20.glDeleteShader(shader);
+      }
   }
+
+  // Função para verificar se o programa OpenGL foi linkado corretamente
+  private static void checkProgramLink(int program) {
+      int[] linkStatus = new int[1];
+      GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
+      if (linkStatus[0] == 0) {
+          Log.e("ProgramError", GLES20.glGetProgramInfoLog(program));
+      }
+  }
+
 }
