@@ -116,7 +116,7 @@
    private ConstraintLayout meaningButton;
    private RequestManager glideRequestManager;
    private ImageView arPlaceholderView;
-   private LinearLayout infoCardView;
+   private ConstraintLayout infoCardView;
    private TextView infoCardCategoryView;
    private TextView infoCardTitleView;
    private TextView infoCardDescriptionView;
