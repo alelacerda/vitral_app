@@ -20,21 +20,6 @@ class ARView extends StatelessWidget {
           onPlatformViewCreated: (id) => _onPlatformViewCreated(context, id),
         ),
       );
-    } else if (Platform.isAndroid) {
-      return Scaffold(
-        body: Center(
-          child: ElevatedButton(
-            onPressed: _launchAndroidActivity,
-            child: const Text('Abrir Realidade Aumentada'),
-          ),
-        ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _handleGoBack(context);
-        },
-        child: const Icon(Icons.add),
-      ),
-      );
     } else {
       return Scaffold(
         appBar: AppBar(
@@ -82,11 +67,6 @@ class ARView extends StatelessWidget {
     final article = await Api.fetchArticleWithId(arguments);
 
     onNavigateToArticle(context, article);
-  }
-
-  void _launchAndroidActivity() {
-    print("Launching Android Activity...");
-    _methodChannel.invokeMethod('launchAndroidActivity');
   }
 
   Future<Map<String, dynamic>> getStainedGlass(arguments) async {

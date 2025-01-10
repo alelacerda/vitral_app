@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../components/rounded_button.dart';
 import '../models/location.dart';
@@ -16,6 +18,7 @@ import 'views/temporary_view.dart';
 import 'widgets/custom_app_bar.dart';
 import 'widgets/custom_drawer_menu.dart';
 import 'widgets/custom_nav_bar.dart';
+import 'package:flutter/services.dart';
 
 enum SecondaryView {
   aboutTheProject,
@@ -24,6 +27,7 @@ enum SecondaryView {
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
+  static const MethodChannel _methodChannel = MethodChannel('ar_view_channel');
 
   @override
   State<NavigationPage> createState() => NavigationPageState();
@@ -47,6 +51,8 @@ class NavigationPageState extends State<NavigationPage> {
 
   // MARK: - Bottom sheet controller
   PersistentBottomSheetController? _bottomSheetController;
+
+  
 
   // MARK: - Navigation methods
   void navigateToArticleDetails(Article article) {
@@ -182,12 +188,18 @@ class NavigationPageState extends State<NavigationPage> {
                     text: 'Iniciar',
                     iconName: CustomIcons.start,
                     onPressed: () {
+
+                      if (Platform.isAndroid) {
+                        NavigationPage._methodChannel.invokeMethod('launchAndroidActivity');
+
+                      } else {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ARView(onNavigateToArticle: navigateToArticleDetailsFromAR),
                           fullscreenDialog: true,
                         ),
                       );
+                      }
                     },
                     color: UIColor.purple,
                     textColor: UIColor.white,
